@@ -47,7 +47,6 @@ public class BootstrapData {
 			log.info("Inserindo dados fake de dev...");
 			Usuario usuario1 = new Usuario();
 			usuario1.setLogin("paulo");
-			usuario1.setOnline(false);
 			usuario1.setSenha(passwordEncoder.encode("senha"));
 			usuario1.setEnabled(true);
 			usuarioRepository.save(usuario1);
@@ -55,7 +54,6 @@ public class BootstrapData {
 			
 			Usuario usuario2 = new Usuario();
 			usuario2.setLogin("paulo2");
-			usuario2.setOnline(false);
 			usuario2.setEnabled(true);
 			usuario2.setSenha(passwordEncoder.encode("senha"));
 			usuarioRepository.save(usuario2);

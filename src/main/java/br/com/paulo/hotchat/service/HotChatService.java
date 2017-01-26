@@ -4,15 +4,19 @@ import java.time.LocalDateTime;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.event.EventListener;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.web.socket.messaging.SessionConnectEvent;
+import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 
 import br.com.paulo.hotchat.domain.Mensagem;
 import br.com.paulo.hotchat.domain.Usuario;
 import br.com.paulo.hotchat.repository.MensagemRepository;
 import br.com.paulo.hotchat.repository.UsuarioRepository;
+import br.com.paulo.hotchat.websocket.UsuariosConectados;
 
 @Service
 public class HotChatService {
@@ -22,16 +26,27 @@ public class HotChatService {
 	private final UsuarioRepository usuarioRepository;
 	private final MensagemRepository mensagemRepository;
 	private final SimpMessagingTemplate simpMessagingTemplate;
+	private final UsuariosConectados usuariosConectados;
 	
-	public HotChatService(UsuarioRepository usuarioRepository, MensagemRepository mensagemRepository, SimpMessagingTemplate simpMessagingTemplate) {
+	public HotChatService(UsuarioRepository usuarioRepository, 
+			MensagemRepository mensagemRepository, 
+			SimpMessagingTemplate simpMessagingTemplate,
+			UsuariosConectados usuariosConectados) {
+		
 		this.usuarioRepository = usuarioRepository;
 		this.mensagemRepository = mensagemRepository;
 		this.simpMessagingTemplate = simpMessagingTemplate;
+		this.usuariosConectados = usuariosConectados;
 	}
 
 	public Iterable<Usuario> listarUsuarios(String username) {
-		//TODO retirar o usuario logado da lista
-		return usuarioRepository.findAllBut(username);
+		Iterable<Usuario> usuarios = usuarioRepository.findAllBut(username);
+		
+		usuarios.forEach(usuario -> {
+			usuario.setOnline(usuariosConectados.estaConectado(usuario));
+		});
+		
+		return usuarios;
 	}
 	
 	public Iterable<Mensagem> listarMensagensNaoLidasDestinatario(String username) {
@@ -62,16 +77,31 @@ public class HotChatService {
 			.setLida(false);
 		
 
-//TODO	if(usuarioIsOnline()) {
-		mensagem.setLida(true);
-		log.info("Enviando mensagem - destinatario: {}, emissor: {}, conteudo: {}...", mensagem.getDestinatario().getLogin(), emissor, mensagem.getConteudo());
-		
-		simpMessagingTemplate.convertAndSendToUser(
-				mensagem.getDestinatario().getLogin(), 
-				"/queue/chat", 
-				mensagem);
-//		}
+		if(usuariosConectados.estaConectado(mensagem.getDestinatario())) {
+			//TODO mudar como registra que a mensagem é lida
+			mensagem.setLida(true);
+			
+			log.info("Enviando mensagem - destinatario: {}, emissor: {}, conteudo: {}...", mensagem.getDestinatario().getLogin(), emissor, mensagem.getConteudo());
+			
+			simpMessagingTemplate.convertAndSendToUser(
+					mensagem.getDestinatario().getLogin(), 
+					"/queue/chat", 
+					mensagem);
+		}
 		mensagemRepository.save(mensagem);
 	}
+	
+	@EventListener
+	private void handleSessionConnected(SessionConnectEvent event) {
+		log.info("{} conectado ao websocket.", event.getUser().getName());
+		
+		usuariosConectados.usuarioConectado(usuarioRepository.findByLogin(event.getUser().getName()));
+	}
 
+	@EventListener
+	private void handleSessionDisconnect(SessionDisconnectEvent event) {
+		log.info("{} desconectado do websocket.", event.getUser().getName());
+		
+		usuariosConectados.usuarioDesconectado(usuarioRepository.findByLogin(event.getUser().getName()));
+	}
 }
