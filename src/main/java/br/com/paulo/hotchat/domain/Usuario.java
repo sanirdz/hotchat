@@ -1,15 +1,26 @@
 package br.com.paulo.hotchat.domain;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Table;
 
 @Entity
+@Table(name = "USERS")
 public class Usuario {
 
 	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
+
+	@Column(name = "username")
 	private String login;
+
+	@Column(name = "password")
 	private String senha;
+	private Boolean enabled;
 	private Boolean online;
 	
 	public Long getId() {
@@ -42,5 +53,13 @@ public class Usuario {
 	
 	public void setOnline(Boolean online) {
 		this.online = online;
+	}
+
+	public Boolean getEnabled() {
+		return enabled;
+	}
+
+	public void setEnabled(Boolean enabled) {
+		this.enabled = enabled;
 	}
 }

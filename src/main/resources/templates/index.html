@@ -19,7 +19,7 @@
 						</tr>
 					</thead>
 					<tbody>
-						<tr th:each="it : ${lista}">
+						<tr th:each="it : ${contatos}">
 							<td style="width: 2%">
 								<span th:switch="${it.online}">
 									<i th:case="true" class="fa fa-circle" aria-hidden="true" title="Online" style="color:green"></i>
@@ -30,15 +30,65 @@
 								usuario
 							</td>
 							<td style="width: 10%">
-								<a class="btn btn-default btn-xs" href="edit.html" title="Enviar Mensagem" th:href="@{/tarefa/{id}(id=${it.id})}">
+								<button type="button" class="btn btn-default btn-xs" data-toggle="modal" data-target="#modal-enviar-mensagem">
 									<i class="fa fa-pencil" aria-hidden="true" style="color:rgb(61, 89, 212)"></i>
-								
-								</a>
+								</button>
 							</td>
 						</tr>
 					</tbody>
 				</table>
 			</div>
-		</div>
+			
+			<div class="table-responsive">
+				<table class="table table-condensed table-bordered table-striped" id="tabela-mensagens">
+					<thead>
+						<tr>
+							<th>
+								Data de Envio
+							</th>
+							<th>
+								Emissor
+							</th>
+							<th>
+								Mensagem
+							</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="it : ${mensagens}">
+							<td th:text="${it.dataEnvio}">
+								10/10/2000
+							</td>
+							<td th:text="${it.emissor.login}">
+								usuario emissor
+							</td>
+							<td th:text="${it.texto}">
+								texto da mensagem
+							</td>							
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			
+			<div class="modal fade" id="modal-enviar-mensagem" tabindex="-1" role="dialog">
+				<div class="modal-dialog" role="document">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+							<h4 class="modal-title">Enviar Mensagem</h4>
+						</div>
+						<div class="modal-body">
+							<div class="form-group">
+							    <textarea class="form-control" id="mensagem.texto" name="mensagem.texto" ></textarea>
+						    </div>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
+							<button type="button" class="btn btn-primary" onclick="adicionarUsuario();">Enviar</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>		
 	</body>
 </html>
