@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
+	<head th:replace="fragments/header :: head">
+	</head>
+	
+	<body>
+		<div class="container">
+			<div class="page-header">
+				<div class="pull-right">
+	            	<span th:inline="text">[[${#httpServletRequest.remoteUser}]]</span> 
+					<form th:action="@{/logout}" method="post" id="logout-form">
+						<a href="#" onclick="$('#logout-form').submit();">Sair</a>
+	        		</form>
+        		</div>
+			</div>
+		
+			<div class="panel panel-default">
+				<div class="panel-body">
+					<div layout:fragment="content">
+					</div>
+				</div>
+			</div>
+		</div>
+		<script>
+			$(function () {
+				var token = $("meta[name='_csrf']").attr("content");
+				var header = $("meta[name='_csrf_header']").attr("content");
+				
+				$(document).ajaxSend(function(e, xhr, options) {
+					xhr.setRequestHeader(header, token);
+				});
+			});
+		</script>
+	</body>
+</html>

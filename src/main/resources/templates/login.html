@@ -1,0 +1,36 @@
+<html xmlns:th="http://www.thymeleaf.org" xmlns:tiles="http://www.thymeleaf.org">
+  <head>
+    <title tiles:fragment="title">HotChat</title>
+   
+   	<link rel="stylesheet" th:href="@{/webjars/bootstrap/3.3.7-1/css/bootstrap.min.css}" href="http://cdn.jsdelivr.net/webjars/bootstrap/3.3.7-1/css/bootstrap.min.css"/>
+	<link rel="stylesheet" th:href="@{/webjars/font-awesome/4.7.0/css/font-awesome.min.css}" href="http://cdn.jsdelivr.net/webjars/font-awesome/4.7.0/css/font-awesome.min.css"></link>
+	
+	<script type="text/javascript" th:src="@{/webjars/jquery/2.2.4/jquery.min.js}" src="http://cdn.jsdelivr.net/webjars/jquery/2.2.4/jquery.min.js"></script>
+	<script type="text/javascript" th:src="@{/webjars/bootstrap/3.3.7-1/js/bootstrap.min.js}" src="http://cdn.jsdelivr.net/webjars/bootstrap/3.3.7-1/js/bootstrap.min.js"></script>
+  </head>
+  <body>
+  	<div class="container">
+	    <div tiles:fragment="content">
+	        <form name="f" th:action="@{/login}" method="post">               
+	            <fieldset>
+	                <legend>Login</legend>
+	                <div th:if="${param.error}" class="alert alert-error">    
+	                    Usuário ou senha inválidos.
+	                </div>
+	                <div th:if="${param.logout}" class="alert alert-success"> 
+	                    You have been logged out.
+	                </div>
+	                <label for="username">Usuário</label>
+	                <input type="text" id="username" name="username"/>        
+	                <label for="password">Senha</label>
+	                <input type="password" id="password" name="password"/>    
+	                <div class="form-actions">
+	                    <button type="submit" class="btn">Entrar</button>
+	                    <a href="/cadastro.html" th:href="@{/cadastro/novo}">Cadastrar</a>
+	                </div>
+	            </fieldset>
+	        </form>
+	    </div>
+    </div>
+  </body>
+</html>

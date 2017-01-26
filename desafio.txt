@@ -1,0 +1,49 @@
+ DESAFIO DE PROGRAMAÇÃO
+
+Neste desafio, você deve criar uma aplicação Web de Chat utilizando a linguagem de programação Java e as tecnologias WebSocket e APIs RESTful.
+Abaixo listamos os requisitos funcionais e não funcionais da aplicação.
+
+Requisitos funcionais:
+
+    Tela de login
+A tela inicial da aplicação deve ser uma tela de autenticação com campos de usuário e senha. 
+Caso o usuário não possua cadastro, deverá existir um botão/link para tela de cadastro.
+
+    Tela de listagem de contatos online
+Após autenticado o sistema deverá exibir uma listagem dos contatos que estão online. 
+Após logar, o usuário deverá ser notificado de todas as mensagens que foram enviadas para ele enquanto estava offline.
+
+    Envio de mensagens para usuários
+Deve existir uma tela para envio de mensagens para os usuários. 
+Caso o destinatário esteja online, este deverá ser notificado com nome do emissor e data de envio. 
+Utilize WebSocket para a notificação. 
+Caso o usuário esteja offline a mensagem deverá ser armazenada para ser exibida ao receptor quando ele efetuar login.
+
+Requisitos não funcionais:
+    A aplicação deverá suportar inicialmente 100 usuários simultâneos.
+
+Pontos extras:
+
+Seguem abaixo algumas funcionalidades desejáveis para a aplicação que não são obrigatórias para este desafio. 
+Porém, serão considerados pontos extras para cada item implementado.
+
+    Criação de lista de contatos.
+    Criar tela de histórico de mensagens de usuário.
+    Criar solicitação de amizade.
+    Bloqueio e desbloqueio de usuários.
+    Edição de mensagens enviadas.
+    Envio de mensagens de imagem, áudio e vídeo.
+
+Requisitos técnicos:
+
+    A aplicação deve ser feita em Java.
+    Toda a API REST deve estar documentada utilizando o Swagger (http://swagger.io/).
+    A aplicação deve utilizar Maven para gestão de bibliotecas e build.
+    O código fonte deve ser disponibilizado em um repositório público do GitHub (http://github.com ), analisaremos a frequência dos commits e a separação temática entre eles.
+    Devem ser especificados todos os passos necessários para execução da aplicação.
+    Podem ser utilizadas quaisquer frameworks/bibliotecas Java para a execução deste desafio.
+    Não é necessário utilizar banco de dados, tudo poderá ser processado em memória ou em disco local. Caso você escolha utilizar algum banco de dados nos informe qual banco escolhido e envie junto um dump de estrutura e as configurações de conexão necessárias.
+    Podem ser usadas bibliotecas de Javascript à sua escolha.
+
+    Serão avaliados os testes unitários e/ou de integrações.
+    Estética e layout são extras, não sendo foco da avaliação.

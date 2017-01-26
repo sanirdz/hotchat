@@ -1,0 +1,44 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" 
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorator="layout" th:with="secao='Tarefas'">
+	
+	<body>
+		<div layout:fragment="content">
+			<div class="table-responsive">
+				<table class="table table-condensed table-bordered table-striped" id="tabela-usuarios">
+					<thead>
+						<tr>
+							<th>
+							</th>
+							<th>
+								Nome
+							</th>
+							<th>
+							</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="it : ${lista}">
+							<td style="width: 2%">
+								<span th:switch="${it.online}">
+									<i th:case="true" class="fa fa-circle" aria-hidden="true" title="Online" style="color:green"></i>
+									<i th:case="false" class="fa fa-circle" aria-hidden="true" title="Offline" style="color:gray"></i>
+								</span>
+							</td>
+							<td th:text="${it.login}">
+								usuario
+							</td>
+							<td style="width: 10%">
+								<a class="btn btn-default btn-xs" href="edit.html" title="Enviar Mensagem" th:href="@{/tarefa/{id}(id=${it.id})}">
+									<i class="fa fa-pencil" aria-hidden="true" style="color:rgb(61, 89, 212)"></i>
+								
+								</a>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</body>
+</html>
