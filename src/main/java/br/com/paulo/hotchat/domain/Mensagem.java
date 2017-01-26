@@ -8,6 +8,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.Version;
 
 @Entity
 public class Mensagem {
@@ -27,51 +28,69 @@ public class Mensagem {
 	@JoinColumn(name = "ID_DESTINATARIO")
 	private Usuario destinatario;
 	
+	@Version
+	private Long version;
+	
 	public Long getId() {
 		return id;
 	}
 
-	public void setId(Long id) {
+	public Mensagem setId(Long id) {
 		this.id = id;
+		return this;
 	}
 
 	public LocalDateTime getDataEnvio() {
 		return dataEnvio;
 	}
 
-	public void setDataEnvio(LocalDateTime dataEnvio) {
+	public Mensagem setDataEnvio(LocalDateTime dataEnvio) {
 		this.dataEnvio = dataEnvio;
+		return this;
 	}
 
 	public Usuario getEmissor() {
 		return emissor;
 	}
 
-	public void setEmissor(Usuario emissor) {
+	public Mensagem setEmissor(Usuario emissor) {
 		this.emissor = emissor;
+		return this;
 	}
 
 	public Usuario getDestinatario() {
 		return destinatario;
 	}
 
-	public void setDestinatario(Usuario destinatario) {
+	public Mensagem setDestinatario(Usuario destinatario) {
 		this.destinatario = destinatario;
+		return this;
 	}
 
 	public Boolean getLida() {
 		return lida;
 	}
 
-	public void setLida(Boolean lida) {
+	public Mensagem setLida(Boolean lida) {
 		this.lida = lida;
+		return this;
 	}
 
 	public String getTexto() {
 		return texto;
 	}
 
-	public void setTexto(String texto) {
+	public Mensagem setTexto(String texto) {
 		this.texto = texto;
+		return this;
+	}
+
+	public Long getVersion() {
+		return version;
+	}
+
+	public Mensagem setVersion(Long version) {
+		this.version = version;
+		return this;
 	}
 }

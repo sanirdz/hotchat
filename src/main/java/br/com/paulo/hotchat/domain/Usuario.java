@@ -6,6 +6,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Version;
 
 @Entity
 @Table(name = "USERS")
@@ -20,6 +21,10 @@ public class Usuario {
 
 	@Column(name = "password")
 	private String senha;
+
+	@Version
+	private Long version;
+	
 	private Boolean enabled;
 	private Boolean online;
 	
@@ -61,5 +66,13 @@ public class Usuario {
 
 	public void setEnabled(Boolean enabled) {
 		this.enabled = enabled;
+	}
+
+	public Long getVersion() {
+		return version;
+	}
+
+	public void setVersion(Long version) {
+		this.version = version;
 	}
 }
