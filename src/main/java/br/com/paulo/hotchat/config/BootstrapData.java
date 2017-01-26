@@ -18,9 +18,9 @@ import br.com.paulo.hotchat.repository.UserRoleRepository;
 import br.com.paulo.hotchat.repository.UsuarioRepository;
 
 @Component
-public class FakeData {
+public class BootstrapData {
 
-	private static final Logger log = LoggerFactory.getLogger(FakeData.class);
+	private static final Logger log = LoggerFactory.getLogger(BootstrapData.class);
 	
 	private final UsuarioRepository usuarioRepository;
 	private final UserRoleRepository userRoleRepository;
@@ -28,7 +28,7 @@ public class FakeData {
 	private final PasswordEncoder passwordEncoder;
 	private final Boolean fakeData;
 	
-	public FakeData(UsuarioRepository usuarioRepository, 
+	public BootstrapData(UsuarioRepository usuarioRepository, 
 					MensagemRepository mensagemRepository,
 					PasswordEncoder passwordEncoder,
 					UserRoleRepository userRoleRepository,
@@ -41,7 +41,7 @@ public class FakeData {
 		this.fakeData = fakeData;
 	}
 	
-	@EventListener()
+	@EventListener
 	public void onApplicationRefresh(ContextRefreshedEvent event) {
 		if(fakeData) {
 			log.info("Inserindo dados fake de dev...");
