@@ -1,5 +1,7 @@
 package br.com.paulo.hotchat.service;
 
+import java.time.LocalDateTime;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -47,6 +49,19 @@ public class HotChatService {
 		log.debug("{} mensagens não lidas para o destinatario {}...", mensagens.getTotalElements(), username);
 		
 		return mensagens;
+	}
+
+	public void enviarMensagem(Mensagem mensagem, String emissor) {
+		mensagem
+			.setEmissor(usuarioRepository.findByLogin(emissor))
+			.setDestinatario(usuarioRepository.findOne(mensagem.getDestinatario().getId()))
+			.setDataEnvio(LocalDateTime.now())
+			.setLida(false);
+
+		log.info("Enviando mensagem - destinatario: {}, emissor: {}, texto: {}...", 
+				mensagem.getDestinatario().getLogin(), emissor, mensagem.getTexto());
+		
+		mensagemRepository.save(mensagem);
 	}
 
 }
