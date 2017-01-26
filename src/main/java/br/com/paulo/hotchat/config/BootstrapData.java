@@ -67,7 +67,7 @@ public class BootstrapData {
 			mensagem.setEmissor(usuario2);
 			mensagem.setDestinatario(usuario1);
 			mensagem.setLida(false);
-			mensagem.setTexto("Essa é uma mensagem não lida");
+			mensagem.setConteudo("Essa é uma mensagem não lida");
 			mensagemRepository.save(mensagem);
 		}		
 	}

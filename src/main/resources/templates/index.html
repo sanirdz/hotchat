@@ -52,7 +52,7 @@
 							<div class="modal-body">
 								<div class="form-group">
 									<input type="hidden" id="id-destinatario"/>
-								    <textarea class="form-control" id="mensagem-texto" name="mensagem-texto" ></textarea>
+								    <textarea class="form-control" id="mensagem-conteudo" name="mensagem-conteudo" ></textarea>
 							    </div>
 							</div>
 							<div class="modal-footer">
@@ -87,7 +87,7 @@
 							<td th:text="${it.emissor.login}">
 								usuario emissor
 							</td>
-							<td th:text="${it.texto}">
+							<td th:text="${it.conteudo}">
 								texto da mensagem
 							</td>							
 						</tr>
@@ -96,10 +96,14 @@
 			</div>
 			
 			<script type="text/javascript" th:inline="javascript">
+				$(document).ready(function() {
+					conectar();
+				}); 
+			
 				$(document).on("click", ".botao-enviar-msg", function () {
 				     $(".modal-body #id-destinatario").val($(this).data('id'));
 				     $(".modal-header #nome-destinatario").text($(this).data('nome'));
-				     $(".modal-body #mensagem-texto").val('');
+				     $(".modal-body #mensagem-conteudo").val('');
 				});
 				
 				function enviarMensagem() {
@@ -109,12 +113,12 @@
 						url: url,
 						data: {
 							'destinatario.id': $(".modal-body #id-destinatario").val(),
-							'texto': $(".modal-body #mensagem-texto").val(),
+							'conteudo': $(".modal-body #mensagem-conteudo").val(),
 						},
 						success: function(data, textStatus) {
 							$.gritter.add({
-								  title: data.title,
-								  text: data.text,
+								  title: "Sucesso",
+								  text: "Mensagem enviada com sucesso.",
 								  sticky: false
 								});		
 						},
@@ -125,7 +129,6 @@
 					
 					$('#modal-enviar-mensagem').modal('hide');
 				}
-				
 			</script>
 		</div>		
 	</body>

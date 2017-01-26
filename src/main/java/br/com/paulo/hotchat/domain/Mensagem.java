@@ -18,7 +18,7 @@ public class Mensagem {
 	private Long id;
 	private LocalDateTime dataEnvio;
 	private Boolean lida;
-	private String texto;
+	private String conteudo;
 	
 	@ManyToOne
 	@JoinColumn(name = "ID_EMISSOR")
@@ -76,12 +76,12 @@ public class Mensagem {
 		return this;
 	}
 
-	public String getTexto() {
-		return texto;
+	public String getConteudo() {
+		return conteudo;
 	}
 
-	public Mensagem setTexto(String texto) {
-		this.texto = texto;
+	public Mensagem setConteudo(String conteudo) {
+		this.conteudo = conteudo;
 		return this;
 	}
 

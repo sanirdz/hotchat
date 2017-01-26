@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import br.com.paulo.hotchat.domain.Mensagem;
@@ -20,10 +21,12 @@ public class HotChatService {
 	
 	private final UsuarioRepository usuarioRepository;
 	private final MensagemRepository mensagemRepository;
+	private final SimpMessagingTemplate simpMessagingTemplate;
 	
-	public HotChatService(UsuarioRepository usuarioRepository, MensagemRepository mensagemRepository) {
+	public HotChatService(UsuarioRepository usuarioRepository, MensagemRepository mensagemRepository, SimpMessagingTemplate simpMessagingTemplate) {
 		this.usuarioRepository = usuarioRepository;
 		this.mensagemRepository = mensagemRepository;
+		this.simpMessagingTemplate = simpMessagingTemplate;
 	}
 
 	public Iterable<Usuario> listarUsuarios(String username) {
@@ -32,7 +35,7 @@ public class HotChatService {
 	}
 	
 	public Iterable<Mensagem> listarMensagensNaoLidasDestinatario(String username) {
-		log.info("Listando mensagens não lidas para o destinatario {}...", username);
+		log.info("Listando mensagens não lidas para o destinatário {}...", username);
 		
 		Usuario destinatario = usuarioRepository.findByLogin(username);
 		
@@ -57,10 +60,17 @@ public class HotChatService {
 			.setDestinatario(usuarioRepository.findOne(mensagem.getDestinatario().getId()))
 			.setDataEnvio(LocalDateTime.now())
 			.setLida(false);
-
-		log.info("Enviando mensagem - destinatario: {}, emissor: {}, texto: {}...", 
-				mensagem.getDestinatario().getLogin(), emissor, mensagem.getTexto());
 		
+
+//TODO	if(usuarioIsOnline()) {
+		mensagem.setLida(true);
+		log.info("Enviando mensagem - destinatario: {}, emissor: {}, conteudo: {}...", mensagem.getDestinatario().getLogin(), emissor, mensagem.getConteudo());
+		
+		simpMessagingTemplate.convertAndSendToUser(
+				mensagem.getDestinatario().getLogin(), 
+				"/queue/chat", 
+				mensagem);
+//		}
 		mensagemRepository.save(mensagem);
 	}
 

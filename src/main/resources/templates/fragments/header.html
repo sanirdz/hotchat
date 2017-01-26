@@ -7,10 +7,18 @@
 	   	<meta name="_csrf" th:content="${_csrf.token}"/>
 		<meta name="_csrf_header" th:content="${_csrf.headerName}"/>
 		
-		<link rel="stylesheet" th:href="@{/webjars/bootstrap/3.3.7-1/css/bootstrap.min.css}" href="http://cdn.jsdelivr.net/webjars/bootstrap/3.3.7-1/css/bootstrap.min.css"/>
-		<link rel="stylesheet" th:href="@{/webjars/font-awesome/4.7.0/css/font-awesome.min.css}" href="http://cdn.jsdelivr.net/webjars/font-awesome/4.7.0/css/font-awesome.min.css"></link>
+		<link rel="stylesheet" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}" href="http://cdn.jsdelivr.net/webjars/bootstrap/3.3.7-1/css/bootstrap.min.css"/>
+		<link rel="stylesheet" th:href="@{/webjars/font-awesome/css/font-awesome.min.css}" href="http://cdn.jsdelivr.net/webjars/font-awesome/4.7.0/css/font-awesome.min.css"></link>
 		
-		<script type="text/javascript" th:src="@{/webjars/jquery/2.2.4/jquery.min.js}" src="http://cdn.jsdelivr.net/webjars/jquery/2.2.4/jquery.min.js"></script>
-		<script type="text/javascript" th:src="@{/webjars/bootstrap/3.3.7-1/js/bootstrap.min.js}" src="http://cdn.jsdelivr.net/webjars/bootstrap/3.3.7-1/js/bootstrap.min.js"></script>
+		<link rel="stylesheet" th:href="@{/css/jquery.gritter.css}" href="static/css/jquery.gritter.css"></link>
+		
+		<script type="text/javascript" th:src="@{/webjars/jquery/jquery.min.js}" src="http://cdn.jsdelivr.net/webjars/jquery/2.2.4/jquery.min.js"></script>
+		<script type="text/javascript" th:src="@{/webjars/bootstrap/js/bootstrap.min.js}" src="http://cdn.jsdelivr.net/webjars/bootstrap/3.3.7-1/js/bootstrap.min.js"></script>
+		
+		<script type="text/javascript" th:src="@{/static/js/script.js}"></script>
+		<script type="text/javascript" th:src="@{/webjars/sockjs-client/sockjs.min.js}"></script>
+    	<script type="text/javascript" th:src="@{/webjars/stomp-websocket/stomp.min.js}"></script>
+    	
+    	<script type="text/javascript" th:src="@{/js/jquery.gritter.min.js}" src="static/js/jquery.gritter.min.js"></script>
 	</head>
 </html>

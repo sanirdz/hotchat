@@ -35,9 +35,8 @@ public class ContatoController {
 	}
 	
 	@RequestMapping(value = "enviarMensagem", method = RequestMethod.POST)
-	public @ResponseBody Map<String, String> asdf(Mensagem mensagem, @AuthenticationPrincipal User usuarioLogado) {
+	public @ResponseBody Map<String, String> enviarMensagem(Mensagem mensagem, @AuthenticationPrincipal User usuarioLogado) {
 		chatService.enviarMensagem(mensagem, usuarioLogado.getUsername());
-		
 		
 		Map<String, String> resposta = new HashMap<String, String>();
 		return resposta;
