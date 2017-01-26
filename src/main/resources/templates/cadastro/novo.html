@@ -1,10 +1,25 @@
 <html xmlns:th="http://www.thymeleaf.org" xmlns:tiles="http://www.thymeleaf.org">
   <head>
-    <title tiles:fragment="title">HotChat</title>
+    <title tiles:fragment="title">HotChat - Novo Usuário</title>
+   
+   	<link rel="stylesheet" th:href="@{/webjars/bootstrap/3.3.7-1/css/bootstrap.min.css}" href="http://cdn.jsdelivr.net/webjars/bootstrap/3.3.7-1/css/bootstrap.min.css"/>
+	<link rel="stylesheet" th:href="@{/webjars/font-awesome/4.7.0/css/font-awesome.min.css}" href="http://cdn.jsdelivr.net/webjars/font-awesome/4.7.0/css/font-awesome.min.css"></link>
+	
+	<script type="text/javascript" th:src="@{/webjars/jquery/2.2.4/jquery.min.js}" src="http://cdn.jsdelivr.net/webjars/jquery/2.2.4/jquery.min.js"></script>
+	<script type="text/javascript" th:src="@{/webjars/bootstrap/3.3.7-1/js/bootstrap.min.js}" src="http://cdn.jsdelivr.net/webjars/bootstrap/3.3.7-1/js/bootstrap.min.js"></script>
   </head>
   <body>
-    <div tiles:fragment="content">
-       Cadastrar novo usuario
-    </div>
-  </body>
+  		<div class="container">
+			<form action="#" th:action="@{/cadastro/salvar}"
+				th:object="${usuario}" method="post">
+				<label for="login">Login</label>
+				<input type="text" th:field="*{login}" />
+				
+				<label for="senha">Senha</label>
+				<input type="password" th:field="*{senha}" />
+				
+				<input type="submit"/>
+			</form>
+		</div>
+	</body>
 </html>

@@ -12,7 +12,7 @@ function conectar() {
 
 function exibirMensagem(mensagem) {
 	$('#tabela-mensagens > tbody:last-child')
-		.append("<tr>" + 
+		.append("<tr class='animated flash'>" + 
 				"<td>" + mensagem.dataEnvio + "</td>" + 
 				"<td>" + mensagem.emissor.login + "</td>" +
 				"<td>" + mensagem.conteudo + "</td>" +

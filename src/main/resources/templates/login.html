@@ -14,12 +14,15 @@
 	        <form name="f" th:action="@{/login}" method="post">               
 	            <fieldset>
 	                <legend>Login</legend>
-	                <div th:if="${param.error}" class="alert alert-error">    
+	                <div th:if="${param.error}" class="alert alert-warning">    
 	                    Usuário e senha inválidos.
 	                </div>
 	                <div th:if="${param.logout}" class="alert alert-success"> 
-	                    You have been logged out.
+	                    Você saiu com sucesso.
 	                </div>
+	                <div th:if="${mensagem}" class="alert alert-success"> 
+	                    <span th:text="${mensagem}"></span>
+	                </div>	                
 	                <label for="username">Usuário</label>
 	                <input type="text" id="username" name="username"/>        
 	                <label for="password">Senha</label>

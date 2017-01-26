@@ -9,6 +9,8 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.persistence.Version;
 
+import org.hibernate.validator.constraints.NotBlank;
+
 @Entity
 @Table(name = "USERS")
 public class Usuario {
@@ -17,50 +19,56 @@ public class Usuario {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 
-	@Column(name = "username")
+	@NotBlank
+	@Column(name = "username", unique = true)
 	private String login;
 
+	@NotBlank
 	@Column(name = "password")
 	private String senha;
+
+	private Boolean enabled;
 
 	@Version
 	private Long version;
 	
-	private Boolean enabled;
-	
 	@Transient
 	private Boolean online;
-	
+
 	public Long getId() {
 		return id;
 	}
 	
-	public void setId(Long id) {
+	public Usuario setId(Long id) {
 		this.id = id;
+		return this;
 	}
 	
 	public String getLogin() {
 		return login;
 	}
 	
-	public void setLogin(String login) {
+	public Usuario setLogin(String login) {
 		this.login = login;
+		return this;
 	}
 	
 	public String getSenha() {
 		return senha;
 	}
 	
-	public void setSenha(String senha) {
+	public Usuario setSenha(String senha) {
 		this.senha = senha;
+		return this;
 	}
 	
 	public Boolean getEnabled() {
 		return enabled;
 	}
 
-	public void setEnabled(Boolean enabled) {
+	public Usuario setEnabled(Boolean enabled) {
 		this.enabled = enabled;
+		return this;
 	}
 
 	public Long getVersion() {
@@ -75,8 +83,9 @@ public class Usuario {
 		return online;
 	}
 
-	public void setOnline(Boolean online) {
+	public Usuario setOnline(Boolean online) {
 		this.online = online;
+		return this;
 	}
 
 	@Override

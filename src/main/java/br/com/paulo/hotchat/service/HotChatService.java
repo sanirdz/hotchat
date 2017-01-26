@@ -8,13 +8,16 @@ import org.springframework.context.event.EventListener;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.socket.messaging.SessionConnectEvent;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 
 import br.com.paulo.hotchat.domain.Mensagem;
+import br.com.paulo.hotchat.domain.UserRole;
 import br.com.paulo.hotchat.domain.Usuario;
 import br.com.paulo.hotchat.repository.MensagemRepository;
+import br.com.paulo.hotchat.repository.UserRoleRepository;
 import br.com.paulo.hotchat.repository.UsuarioRepository;
 import br.com.paulo.hotchat.websocket.UsuariosConectados;
 
@@ -24,19 +27,25 @@ public class HotChatService {
 	private static final Logger log = LoggerFactory.getLogger(HotChatService.class);
 	
 	private final UsuarioRepository usuarioRepository;
+	private final UserRoleRepository userRoleRepository;
 	private final MensagemRepository mensagemRepository;
 	private final SimpMessagingTemplate simpMessagingTemplate;
 	private final UsuariosConectados usuariosConectados;
+	private final PasswordEncoder passwordEncoder;
 	
 	public HotChatService(UsuarioRepository usuarioRepository, 
 			MensagemRepository mensagemRepository, 
 			SimpMessagingTemplate simpMessagingTemplate,
-			UsuariosConectados usuariosConectados) {
+			UsuariosConectados usuariosConectados,
+			PasswordEncoder passwordEncoder,
+			UserRoleRepository userRoleRepository) {
 		
 		this.usuarioRepository = usuarioRepository;
 		this.mensagemRepository = mensagemRepository;
 		this.simpMessagingTemplate = simpMessagingTemplate;
 		this.usuariosConectados = usuariosConectados;
+		this.passwordEncoder = passwordEncoder;
+		this.userRoleRepository = userRoleRepository;
 	}
 
 	public Iterable<Usuario> listarUsuarios(String username) {
@@ -103,5 +112,16 @@ public class HotChatService {
 		log.info("{} desconectado do websocket.", event.getUser().getName());
 		
 		usuariosConectados.usuarioDesconectado(usuarioRepository.findByLogin(event.getUser().getName()));
+	}
+
+	public Usuario salvar(Usuario usuario) {
+		//TODO conferir o login unique?
+		usuario
+			.setSenha(passwordEncoder.encode(usuario.getSenha()))
+			.setEnabled(true);
+		
+		userRoleRepository.save(new UserRole().setUsername(usuario.getLogin()).setAuthority("ROLE_USER"));
+		
+		return usuarioRepository.save(usuario);
 	}
 }
