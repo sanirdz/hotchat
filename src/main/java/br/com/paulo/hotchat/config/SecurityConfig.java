@@ -12,14 +12,18 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import br.com.paulo.hotchat.service.LoginHandlerService;
+
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	
 	private final DataSource dataSource;
+	private final LoginHandlerService loginHandlerService;
 	
-    public SecurityConfig(DataSource dataSource) {
+    public SecurityConfig(DataSource dataSource, LoginHandlerService loginHandlerService) {
 		this.dataSource = dataSource;
+		this.loginHandlerService = loginHandlerService;
 	}
     
 	@Bean
@@ -47,6 +51,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
              .headers().frameOptions().disable()
              	.and()
              .logout()
+             	.logoutSuccessHandler(loginHandlerService)
                 .permitAll();
     }
 
