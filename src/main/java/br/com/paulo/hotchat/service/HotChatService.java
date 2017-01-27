@@ -81,7 +81,7 @@ public class HotChatService {
 	public void enviarMensagem(Mensagem mensagem, String emissor) {
 		mensagem
 			.setEmissor(usuarioRepository.findByLogin(emissor))
-			.setDestinatario(usuarioRepository.findOne(mensagem.getDestinatario().getId()))
+			.setDestinatario(usuarioRepository.findByLogin(mensagem.getDestinatario().getLogin()))
 			.setDataEnvio(LocalDateTime.now())
 			.setLida(false);
 		

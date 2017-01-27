@@ -75,8 +75,9 @@ public class Usuario {
 		return version;
 	}
 
-	public void setVersion(Long version) {
+	public Usuario setVersion(Long version) {
 		this.version = version;
+		return this;
 	}
 
 	public Boolean getOnline() {
