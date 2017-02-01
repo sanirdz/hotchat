@@ -4,6 +4,7 @@
 	layout:decorator="layout">
 	
 	<head>
+		<title>HotChat</title>
 		<meta name="_csrf" th:content="${_csrf.token}"/>
 		<meta name="_csrf_header" th:content="${_csrf.headerName}"/>
 		<link rel="stylesheet" th:href="@{/css/style.css}" href="static/css/style.css"></link>
@@ -12,8 +13,6 @@
 		<link rel="stylesheet" th:href="@{/webjars/animate.css/animate.min.css}" href="http://cdn.jsdelivr.net/webjars/animate.css/3.5.2/css/animate.min.css"></link>
 		<link rel="stylesheet" th:href="@{/webjars/font-awesome/css/font-awesome.min.css}" href="http://cdn.jsdelivr.net/webjars/font-awesome/4.7.0/css/font-awesome.min.css"></link>
 		
-		<script type="text/javascript" th:src="@{/webjars/sockjs-client/sockjs.min.js}"></script>
-    	<script type="text/javascript" th:src="@{/webjars/stomp-websocket/stomp.min.js}"></script>
 		<script type="text/javascript" th:src="@{/webjars/jquery/jquery.min.js}" src="http://cdn.jsdelivr.net/webjars/jquery/2.2.4/jquery.min.js"></script>
 		<script type="text/javascript" th:src="@{/webjars/angularjs/angular.min.js}" ></script>
 		<script type="text/javascript" th:src="@{/js/ng-stomp/ng-stomp.standalone.min.js}"></script>
