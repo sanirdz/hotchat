@@ -1,7 +1,7 @@
 angular.module('chatapp')
 	.controller('ChatController', ChatController)
 	
-	function ChatController($stomp, $scope, $rootScope, ApiService) {
+	function ChatController($scope, $rootScope, ApiService) {
 		init();
 		
 		$scope.enviaMensagem = function(mensagem, destinatario) {
@@ -22,10 +22,7 @@ angular.module('chatapp')
 			}
 		});
 
-		
 		function init() {
-			conectarWebSocket();
-			
 			$rootScope.$watch('contatoAtivo', (contato) => {
 				if (contato) {
 					recuperaHistorico(contato.login);
@@ -33,26 +30,23 @@ angular.module('chatapp')
 				}
 			});
 		} 
+		
+		$scope.$on('nova-mensagem', function(event, data) {
+			var mensagem = data.mensagem;
+			
+			if($rootScope.contatoAtivo && mensagem.emissor.login == $rootScope.contatoAtivo.login) {
+	        	if($scope.historico) {
+	        		console.log('adcionando msg do ' + mensagem.emissor.login + '...');
+		        	$scope.historico.push({'conteudo' : mensagem.conteudo, 'emissor': {'login': mensagem.emissor.login}, 'dataEnvio': mensagem.dataEnvio});
+		        	
+		        	$scope.$apply();
+	        	}
+    		}
+		});
 
 		function recuperaHistorico(destinatario){
 			 ApiService
 			 	.recuperaHistorico(destinatario)
 			 	.then((result) =>  $scope.historico = result);	
-		}
-		
-		function conectarWebSocket() {
-			console.log('conectando ao websocket...')
-		    $stomp.connect('/hotchat/chat-websocket', {})
-		      .then(function (frame) {
-		        var subscription = $stomp.subscribe('/user/queue/chat', function (mensagem, headers, res) {
-
-		        	if($scope.historico && mensagem.emissor.login == $rootScope.contatoAtivo.login) {
-		        		console.log('adcionando msg do ' + mensagem.emissor.login + '...');
-			        	$scope.historico.push({'conteudo' : mensagem.conteudo, 'emissor': {'login': mensagem.emissor.login}, 'dataEnvio': mensagem.dataEnvio});
-			        	
-			        	$scope.$apply();
-		        	}
-		        })
-	      })
 		}
 	}

@@ -2,12 +2,15 @@ package br.com.paulo.hotchat.service;
 
 import java.time.LocalDateTime;
 import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.event.EventListener;
+import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -83,6 +86,11 @@ public class HotChatService {
 		
 		return mensagens;
 	}
+	
+	public Integer recuperaQuantidadeMensagensNaoLidas(String emissor, String destinatario) {
+		//TODO recuperaQuantidadeMensagensNaoLidas
+		return 13;
+	}
 
 	public void enviarMensagem(Mensagem mensagem, String emissor) {
 		mensagem
@@ -98,10 +106,14 @@ public class HotChatService {
 
 			log.info("Enviando mensagem - destinatario: {}, emissor: {}, conteudo: {}...", mensagem.getDestinatario().getLogin(), emissor, mensagem.getConteudo());
 
+			SimpMessageHeaderAccessor headers = SimpMessageHeaderAccessor.create();
+			headers.addNativeHeader("tipo", "mensagem");
+			
 			simpMessagingTemplate.convertAndSendToUser(
 					mensagem.getDestinatario().getLogin(), 
 					"/queue/chat", 
-					mensagem);
+					mensagem,
+					headers.getMessageHeaders());
 		}
 		mensagemRepository.save(mensagem);
 	}
@@ -111,6 +123,18 @@ public class HotChatService {
 		log.info("{} conectado ao websocket.", event.getUser().getName());
 
 		usuariosConectados.usuarioConectado(usuarioRepository.findByLogin(event.getUser().getName()));
+		
+		//TODO avisar no websocket que o usuario conectou
+		SimpMessageHeaderAccessor headers = SimpMessageHeaderAccessor.create();
+		headers.addNativeHeader("tipo", "online");
+		
+		Map<String, String> payload = new HashMap<>();
+		payload.put("usuario", event.getUser().getName());
+		
+		simpMessagingTemplate.convertAndSend(
+				"/queue/online-users", 
+				payload,
+				headers.getMessageHeaders());
 	}
 
 	@EventListener
@@ -118,6 +142,18 @@ public class HotChatService {
 		log.info("{} desconectado do websocket.", event.getUser().getName());
 
 		usuariosConectados.usuarioDesconectado(usuarioRepository.findByLogin(event.getUser().getName()));
+		
+		//TODO avisar no websocket que o usuario desconectou
+		SimpMessageHeaderAccessor headers = SimpMessageHeaderAccessor.create();
+		headers.addNativeHeader("tipo", "offline");
+		
+		Map<String, String> payload = new HashMap<>();
+		payload.put("usuario", event.getUser().getName());
+		
+		simpMessagingTemplate.convertAndSend(
+				"/queue/online-users", 
+				payload,
+				headers.getMessageHeaders());
 	}
 
 	public Usuario salvar(Usuario usuario) {
