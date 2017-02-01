@@ -22,10 +22,7 @@ public class ChatController {
 
 	@RequestMapping({"", "/", "/index"})
 	public String index(Model model, @AuthenticationPrincipal User usuarioLogado) {
-		String username = usuarioLogado.getUsername();
-		
-		model.addAttribute("contatos", chatService.listarUsuarios(usuarioLogado.getUsername()));
-		model.addAttribute("mensagens", chatService.listarMensagensNaoLidasDestinatario(username));
+		model.addAttribute("me" ,usuarioLogado.getUsername());
 
 		return "index";
 	}

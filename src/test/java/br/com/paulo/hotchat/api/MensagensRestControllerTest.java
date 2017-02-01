@@ -73,12 +73,14 @@ public class MensagensRestControllerTest {
 		ArrayList<Mensagem> lista = new ArrayList<>();
 		lista.add(new Mensagem().setConteudo("conteudo1"));
 		lista.add(new Mensagem().setConteudo("conteudo2"));
-		given(hotChatService.listarMensagensNaoLidasDestinatario("paulo")).willReturn(lista);
+		given(hotChatService.listarMensagensDestinatarioEmissor("destinatario", "paulo")).willReturn(lista);
 		
 		mvc.perform(get("/api/mensagens/")
+				.param("destinatario", "destinatario")
 				.contentType(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk())
 			.andExpect(jsonPath("$[0].conteudo").value("conteudo1"))
 			.andExpect(jsonPath("$[1].conteudo").value("conteudo2"));
+		
 	}
 }

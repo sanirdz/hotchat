@@ -3,133 +3,39 @@
 	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 	layout:decorator="layout">
 	
+	<head>
+		<meta name="_csrf" th:content="${_csrf.token}"/>
+		<meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+		<link rel="stylesheet" th:href="@{/css/style.css}" href="static/css/style.css"></link>
+	
+		<link rel="stylesheet" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}" href="http://cdn.jsdelivr.net/webjars/bootstrap/3.3.7-1/css/bootstrap.min.css"/>
+		<link rel="stylesheet" th:href="@{/webjars/animate.css/animate.min.css}" href="http://cdn.jsdelivr.net/webjars/animate.css/3.5.2/css/animate.min.css"></link>
+		<link rel="stylesheet" th:href="@{/webjars/font-awesome/css/font-awesome.min.css}" href="http://cdn.jsdelivr.net/webjars/font-awesome/4.7.0/css/font-awesome.min.css"></link>
+		
+		<script type="text/javascript" th:src="@{/webjars/sockjs-client/sockjs.min.js}"></script>
+    	<script type="text/javascript" th:src="@{/webjars/stomp-websocket/stomp.min.js}"></script>
+		<script type="text/javascript" th:src="@{/webjars/jquery/jquery.min.js}" src="http://cdn.jsdelivr.net/webjars/jquery/2.2.4/jquery.min.js"></script>
+		<script type="text/javascript" th:src="@{/webjars/angularjs/angular.min.js}" ></script>
+		<script type="text/javascript" th:src="@{/js/ng-stomp/ng-stomp.standalone.min.js}"></script>
+		<script type="text/javascript" th:src="@{/webjars/angularjs/angular-resource.min.js}" ></script>
+		
+		<script type="text/javascript" th:src="@{/js/components/app.js}" src="static/js/components/app.js"></script>
+		<script type="text/javascript" th:src="@{/js/components/resource/contato.js}" ></script>
+		<script type="text/javascript" th:src="@{/js/components/resource/mensagem.js}" ></script>
+		<script type="text/javascript" th:src="@{/js/components/service/api-service.js}" src="static/js/components/service/api-service.js"></script>
+		<script type="text/javascript" th:src="@{/js/components/directives/chatapp-directives.js}" src="static/js/components/directives/chatapp-directives.js"></script>
+		<script type="text/javascript" th:src="@{/js/components/controllers/contato-controller.js}" src="static/js/components/controllers/contato-controller.js"></script>
+		<script type="text/javascript" th:src="@{/js/components/controllers/chat-controller.js}" src="static/js/components/controllers/chat-controller.js"></script>
+	</head>
+	
 	<body>
 		<div layout:fragment="content">
-			<div class="table-responsive">
-				<table class="table table-condensed table-bordered table-striped" id="tabela-usuarios">
-					<thead>
-						<tr>
-							<th>
-							</th>
-							<th>
-								Nome
-							</th>
-							<th>
-							</th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr th:each="it : ${contatos}">
-							<td style="width: 2%">
-								<span th:switch="${it.online}">
-									<i th:case="true" class="fa fa-circle" aria-hidden="true" title="Online" style="color:green"></i>
-									<i th:case="false" class="fa fa-circle" aria-hidden="true" title="Offline" style="color:gray"></i>
-								</span>
-							</td>
-							<td th:text="${it.login}">
-								usuario
-							</td>
-							<td style="width: 10%">
-								<button type="button" class="btn btn-default btn-xs botao-enviar-msg" 
-										data-toggle="modal" data-target="#modal-enviar-mensagem"
-										th:attr="data-id=${it.id}, data-nome=${it.login}"
-										data-id="1"
-										title="Enviar mensagem...">
-									<i class="fa fa-pencil" aria-hidden="true" style="color:rgb(61, 89, 212)"></i>
-								</button>
-							</td>
-						</tr>
-					</tbody>
-				</table>
-				
-				<div class="modal fade" id="modal-enviar-mensagem" tabindex="-1" role="dialog">
-					<div class="modal-dialog" role="document">
-						<div class="modal-content">
-							<div class="modal-header">
-								<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-								<h4 class="modal-title">Enviar Mensagem para <span id="nome-destinatario">usuario</span></h4>
-							</div>
-							<div class="modal-body">
-								<div class="form-group">
-									<input type="hidden" id="id-destinatario"/>
-								    <textarea class="form-control" id="mensagem-conteudo" name="mensagem-conteudo" ></textarea>
-							    </div>
-							</div>
-							<div class="modal-footer">
-								<button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
-								<button type="button" class="btn btn-primary" onclick="enviarMensagem();">Enviar</button>
-							</div>
-						</div>
-					</div>
-				</div>
+			<input type="hidden" id="me" name="me" th:value="${me}" />
+
+			<div ng-app="chatapp">
+				<contato-list></contato-list>
+				<chat-panel></chat-panel>
 			</div>
-			
-			<div class="table-responsive">
-				<table class="table table-condensed table-bordered table-striped" id="tabela-mensagens">
-					<thead>
-						<tr>
-							<th>
-								Data de Envio
-							</th>
-							<th>
-								Emissor
-							</th>
-							<th>
-								Mensagem
-							</th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr th:each="it : ${mensagens}">
-							<td th:text="${it.dataEnvio}">
-								10/10/2000
-							</td>
-							<td th:text="${it.emissor.login}">
-								usuario emissor
-							</td>
-							<td th:text="${it.conteudo}">
-								texto da mensagem
-							</td>							
-						</tr>
-					</tbody>
-				</table>
-			</div>
-			
-			<script type="text/javascript" th:inline="javascript">
-				$(document).ready(function() {
-					conectar();
-				}); 
-			
-				$(document).on("click", ".botao-enviar-msg", function () {
-				     $(".modal-body #id-destinatario").val($(this).data('id'));
-				     $(".modal-header #nome-destinatario").text($(this).data('nome'));
-				     $(".modal-body #mensagem-conteudo").val('');
-				});
-				
-				function enviarMensagem() {
-					var url = /*[[@{/enviarMensagem}]]*/ '';
-					$.ajax({
-						type:'POST',
-						url: url,
-						data: {
-							'destinatario.id': $(".modal-body #id-destinatario").val(),
-							'conteudo': $(".modal-body #mensagem-conteudo").val(),
-						},
-						success: function(data, textStatus) {
-							$.gritter.add({
-								  title: "Sucesso",
-								  text: "Mensagem enviada com sucesso.",
-								  sticky: false
-								});		
-						},
-						error: function(request, status, error) {
-							alert('Erro no servidor: ' + status);
-						}
-					});
-					
-					$('#modal-enviar-mensagem').modal('hide');
-				}
-			</script>
-		</div>		
+		</div>
 	</body>
 </html>

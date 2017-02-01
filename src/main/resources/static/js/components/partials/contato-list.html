@@ -1,0 +1,18 @@
+<aside class="cht-sidebar">
+	<nav class="cht-menu">
+		<div class="cht-contact">
+			<label><i class="fa fa-user-circle" aria-hidden="true"></i> {{me}}</label>
+			<form action="/hotchat/logout" method="post" id="logout-form">
+				<a href="#" onclick="$('#logout-form').submit();">Sair</a>
+       		</form>
+		</div>	
+		<ul class="cht-menu">		
+			<li ng-repeat="contato in contatos" ng-click="selecionaContato(contato)">
+				<a class="link-contato" href="#">{{contato.login}} 
+					<span class="online" ng-if="contato.online">On</span>
+					<span class="offline" ng-if="!contato.online">Off</span>
+				</a>
+			</li>			
+		</ul>
+	</nav>
+</aside>
