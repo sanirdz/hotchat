@@ -29,6 +29,7 @@ angular.module('chatapp')
 			$rootScope.$watch('contatoAtivo', (contato) => {
 				if (contato) {
 					recuperaHistorico(contato.login);
+					contato.totalMensagensNaoLidas = 0;
 				}
 			});
 		} 

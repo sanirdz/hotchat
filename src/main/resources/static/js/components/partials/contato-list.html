@@ -11,6 +11,7 @@
 				<a class="link-contato" href="#">{{contato.login}} 
 					<span class="online" ng-if="contato.online">On</span>
 					<span class="offline" ng-if="!contato.online">Off</span>
+					<span class="badge" ng-if="contato.totalMensagensNaoLidas > 0">{{contato.totalMensagensNaoLidas}}</span>
 				</a>
 			</li>			
 		</ul>

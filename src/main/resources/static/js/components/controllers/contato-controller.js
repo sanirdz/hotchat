@@ -14,7 +14,16 @@ angular.module('chatapp')
 		function init() {
 			ApiService
 				.recuperaContatos()
-				.then((result) =>  $scope.contatos = result);
+				.then((result) =>  {
+					for(i = 0; i < result.length; i++) {
+						var contato = result[i];
+						var qtd = ApiService.recuperaQuantidadeMensagensNaoLidas(contato, $rootScope.me)
+						
+						contato.totalMensagensNaoLidas = qtd;
+					}
+					
+					$scope.contatos = result;
+				});
 		} 
 		
 		function trataErro(result){
