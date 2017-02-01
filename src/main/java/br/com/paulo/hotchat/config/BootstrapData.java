@@ -45,27 +45,35 @@ public class BootstrapData {
 	public void onApplicationRefresh(ContextRefreshedEvent event) {
 		if(fakeData) {
 			log.info("Inserindo dados fake de dev...");
-			Usuario usuario1 = new Usuario();
-			usuario1.setLogin("paulo");
-			usuario1.setSenha(passwordEncoder.encode("senha"));
-			usuario1.setEnabled(true);
-			usuarioRepository.save(usuario1);
+			Usuario paulo = new Usuario();
+			paulo.setLogin("paulo");
+			paulo.setSenha(passwordEncoder.encode("senha"));
+			paulo.setEnabled(true);
+			usuarioRepository.save(paulo);
 			userRoleRepository.save(new UserRole().setUsername("paulo").setAuthority("ROLE_USER"));
 			
-			Usuario usuario2 = new Usuario();
-			usuario2.setLogin("paulo2");
-			usuario2.setEnabled(true);
-			usuario2.setSenha(passwordEncoder.encode("senha"));
-			usuarioRepository.save(usuario2);
+			Usuario paulo2 = new Usuario();
+			paulo2.setLogin("paulo2");
+			paulo2.setEnabled(true);
+			paulo2.setSenha(passwordEncoder.encode("senha"));
+			usuarioRepository.save(paulo2);
 			userRoleRepository.save(new UserRole().setUsername("paulo2").setAuthority("ROLE_USER"));
 			
 			
 			Mensagem mensagem = new Mensagem();
 			mensagem.setDataEnvio(LocalDateTime.now());
-			mensagem.setEmissor(usuario2);
-			mensagem.setDestinatario(usuario1);
+			mensagem.setEmissor(paulo2);
+			mensagem.setDestinatario(paulo);
 			mensagem.setLida(false);
-			mensagem.setConteudo("Essa é uma mensagem não lida");
+			mensagem.setConteudo("Essa é uma mensagem do paulo2 pro paulo");
+			mensagemRepository.save(mensagem);
+			
+			mensagem = new Mensagem();
+			mensagem.setDataEnvio(LocalDateTime.now());
+			mensagem.setEmissor(paulo);
+			mensagem.setDestinatario(paulo2);
+			mensagem.setLida(false);
+			mensagem.setConteudo("Essa é uma mensagem do paulo pro paulo2");
 			mensagemRepository.save(mensagem);
 		}		
 	}
