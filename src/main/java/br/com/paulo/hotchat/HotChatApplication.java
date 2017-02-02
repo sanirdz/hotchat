@@ -15,6 +15,7 @@ public class HotChatApplication {
         ConfigurableApplicationContext ctx = SpringApplication.run(HotChatApplication.class, args);
         
         log.info("Contexto: {}", ctx.getApplicationName());
+        log.info("H2: {}/{}", ctx.getApplicationName(), "h2-console");
         log.info("Docs api: {}/{}", ctx.getApplicationName(), "swagger-ui.html");
     }
 }
