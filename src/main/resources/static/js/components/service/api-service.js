@@ -15,9 +15,9 @@ angular.module('chatapp')
     	return Mensagem.query({"destinatario": destinatario}).$promise;	
     };
 
-    service.recuperaQuantidadeMensagensNaoLidas = function(emissor, destinatario) {
-    	return 12;	
-    };
+    service.marcarMensagensComoLidas = function(emissor) {
+    	Mensagem.lerMensagens({"emissor": emissor});
+    }
     
     return service;
 })

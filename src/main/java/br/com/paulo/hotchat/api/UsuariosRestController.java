@@ -41,7 +41,7 @@ public class UsuariosRestController {
 	@RequestMapping(method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
 	public ResponseEntity<Usuario> salvar(@ApiParam(value = "Dados do usuário para salvar.") @RequestBody @Valid SalvarUsuarioDTO usuario) {
 		log.debug("POST para salvar usuario");
-		
+		//TODO mudar pra usar usar isso
 		Usuario usuarioSalvo = hotChatService.salvar(new Usuario().setLogin(usuario.getLogin()).setSenha(usuario.getSenha()));
 		
 		return ResponseEntity.ok(usuarioSalvo);

@@ -34,6 +34,9 @@ public class Usuario {
 	
 	@Transient
 	private Boolean online;
+	
+	@Transient
+	private Integer totalMensagensNaoLidas;
 
 	public Long getId() {
 		return id;
@@ -112,5 +115,14 @@ public class Usuario {
 		} else if (!id.equals(other.id))
 			return false;
 		return true;
+	}
+
+	public Integer getTotalMensagensNaoLidas() {
+		return totalMensagensNaoLidas;
+	}
+
+	public Usuario setTotalMensagensNaoLidas(Integer totalMensagensNaoLidas) {
+		this.totalMensagensNaoLidas = totalMensagensNaoLidas;
+		return this;
 	}
 }

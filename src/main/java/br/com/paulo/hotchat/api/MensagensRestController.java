@@ -7,10 +7,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.User;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.paulo.hotchat.api.resource.EnviarMensagemDTO;
@@ -35,15 +35,15 @@ public class MensagensRestController {
 		this.hotChatService = hotChatService;
 	}
 
-	@ApiOperation(value = "Lista todas as mensagens trocadas entre o usuário logado e um destinatario.", tags = {"MensagensRestController"})
+	@ApiOperation(value = "Lista todas as mensagens trocadas entre o usuário logado e um destinatário.", tags = {"MensagensRestController"})
 	@ApiResponses({
 			@ApiResponse(code = 200, message = "Mensagens listadas com sucesso"),
 			@ApiResponse(code = 400, message = "Dados da requisição inválidos."),
 			@ApiResponse(code = 500, message = "Erro inesperado no servidor.")})
-	@RequestMapping(produces = "application/json", method = RequestMethod.GET)
+	@RequestMapping(path="/{destinatario}", produces = "application/json", method = RequestMethod.GET)
 	public ResponseEntity<Iterable<Mensagem>> listarMensagens(
 			@ApiIgnore @AuthenticationPrincipal User usuarioLogado, 
-			@ApiParam("Login do destinatario") @RequestParam String destinatario) {
+			@ApiParam("Login do destinatário") @PathVariable("destinatario") String destinatario) {
 		
 		log.debug("GET para listar mensagens. Usuário logado: {}", usuarioLogado.getUsername());
 		//TODO incluir parametros de paginacao
@@ -52,6 +52,21 @@ public class MensagensRestController {
 		Iterable<Mensagem> mensagens = hotChatService.listarMensagensDestinatarioEmissor(destinatario, usuarioLogado.getUsername());
 		
 		return ResponseEntity.ok(mensagens);
+	}
+	
+	@ApiOperation(value = "Marca as mensagens enviadas por um emissor ao usuario logado como lidas", tags = {"MensagensRestController"})
+	@ApiResponses({
+			@ApiResponse(code = 200, message = "Operação executada com sucesso."),
+			@ApiResponse(code = 400, message = "Dados da requisição inválidos."),
+			@ApiResponse(code = 500, message = "Erro inesperado no servidor.")})
+	@RequestMapping(path = "/{emissor}/marcarLidas", method = RequestMethod.POST, consumes = "application/json")
+	public ResponseEntity<Void> marcarMensagensLidas(@ApiParam("Login do emissor") @PathVariable("emissor") String emissor, 
+			@ApiIgnore @AuthenticationPrincipal User usuarioLogado) {
+		
+		log.debug("POST para marcar mensagens lidas. Usuário logado: {}", usuarioLogado.getUsername());
+		hotChatService.marcarMensagensLidas(emissor, usuarioLogado.getUsername());
+		
+		return ResponseEntity.ok().build();
 	}
 	
 	@ApiOperation(value = "Envia uma mensagem para um destinatário.", tags = {"MensagensRestController"})

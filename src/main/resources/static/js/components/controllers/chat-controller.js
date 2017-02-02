@@ -26,6 +26,7 @@ angular.module('chatapp')
 			$rootScope.$watch('contatoAtivo', (contato) => {
 				if (contato) {
 					recuperaHistorico(contato.login);
+					marcarMensagensComoLidas(contato.login);
 					contato.totalMensagensNaoLidas = 0;
 				}
 			});
@@ -48,5 +49,9 @@ angular.module('chatapp')
 			 ApiService
 			 	.recuperaHistorico(destinatario)
 			 	.then((result) =>  $scope.historico = result);	
+		}
+		
+		function marcarMensagensComoLidas(emissor) {
+			ApiService.marcarMensagensComoLidas(emissor);
 		}
 	}

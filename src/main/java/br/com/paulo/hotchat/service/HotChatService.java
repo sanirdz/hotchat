@@ -57,6 +57,7 @@ public class HotChatService {
 
 		usuarios.forEach(usuario -> {
 			usuario.setOnline(usuariosConectados.estaConectado(usuario));
+			usuario.setTotalMensagensNaoLidas(recuperaQuantidadeMensagensNaoLidas(usuario.getLogin(), username));
 		});
 
 		return usuarios;
@@ -86,10 +87,23 @@ public class HotChatService {
 		
 		return mensagens;
 	}
+
+	public void marcarMensagensLidas(String loginEmissor, String loginDestinatario) {
+		log.info("Marcando mensagens como lidas. {} -> {}...", loginEmissor, loginDestinatario);
+		
+		Usuario destinatario = usuarioRepository.findByLogin(loginDestinatario);
+		Usuario emissor = usuarioRepository.findByLogin(loginEmissor);
+		
+		Iterable<Mensagem> mensagens = mensagemRepository.findAllByDestinatarioAndEmissorOrderByDataEnvio(destinatario, emissor);	
+		
+		mensagens.forEach(m -> m.setLida(true));
+		mensagemRepository.save(mensagens);
+	}
 	
-	public Integer recuperaQuantidadeMensagensNaoLidas(String emissor, String destinatario) {
-		//TODO recuperaQuantidadeMensagensNaoLidas
-		return 13;
+	public Integer recuperaQuantidadeMensagensNaoLidas(String loginEmissor, String loginDestinatario) {
+		Integer qtd = mensagemRepository.recuperaQuantidadeMensagensNaoLidas(loginEmissor, loginDestinatario);
+		log.debug("quantidade {} -> {}: {}", loginEmissor, loginDestinatario, qtd);
+		return qtd;
 	}
 
 	public void enviarMensagem(Mensagem mensagem, String emissor) {
@@ -101,9 +115,6 @@ public class HotChatService {
 
 
 		if(usuariosConectados.estaConectado(mensagem.getDestinatario())) {
-			//TODO mudar como registra que a mensagem é lida
-			mensagem.setLida(true);
-
 			log.info("Enviando mensagem - destinatario: {}, emissor: {}, conteudo: {}...", mensagem.getDestinatario().getLogin(), emissor, mensagem.getConteudo());
 
 			SimpMessageHeaderAccessor headers = SimpMessageHeaderAccessor.create();
@@ -124,7 +135,6 @@ public class HotChatService {
 
 		usuariosConectados.usuarioConectado(usuarioRepository.findByLogin(event.getUser().getName()));
 		
-		//TODO avisar no websocket que o usuario conectou
 		SimpMessageHeaderAccessor headers = SimpMessageHeaderAccessor.create();
 		headers.addNativeHeader("tipo", "online");
 		
@@ -143,7 +153,6 @@ public class HotChatService {
 
 		usuariosConectados.usuarioDesconectado(usuarioRepository.findByLogin(event.getUser().getName()));
 		
-		//TODO avisar no websocket que o usuario desconectou
 		SimpMessageHeaderAccessor headers = SimpMessageHeaderAccessor.create();
 		headers.addNativeHeader("tipo", "offline");
 		
@@ -166,5 +175,4 @@ public class HotChatService {
 
 		return usuarioRepository.save(usuario);
 	}
-
 }

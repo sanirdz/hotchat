@@ -28,7 +28,7 @@ Seguem abaixo algumas funcionalidades desejáveis para a aplicação que não s�
 Porém, serão considerados pontos extras para cada item implementado.
 
     Criação de lista de contatos.
-    Criar tela de histórico de mensagens de usuário.
+   * Criar tela de histórico de mensagens de usuário.
     Criar solicitação de amizade.
     Bloqueio e desbloqueio de usuários.
     Edição de mensagens enviadas.
