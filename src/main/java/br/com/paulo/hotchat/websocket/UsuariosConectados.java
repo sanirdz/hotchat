@@ -5,22 +5,20 @@ import java.util.Set;
 
 import org.springframework.stereotype.Component;
 
-import br.com.paulo.hotchat.domain.Usuario;
-
 @Component
 public class UsuariosConectados {
 
-	private Set<Usuario> activeSessions = new HashSet<Usuario>();
+	private Set<String> activeSessions = new HashSet<String>();
 	
-	public void usuarioConectado(Usuario usuario) {
+	public void usuarioConectado(String usuario) {
 		activeSessions.add(usuario);
 	}
 	
-	public void usuarioDesconectado(Usuario usuario) {
+	public void usuarioDesconectado(String usuario) {
 		activeSessions.remove(usuario);		
 	}
 
-	public Boolean estaConectado(Usuario usuario) {
+	public Boolean estaConectado(String usuario) {
 		return activeSessions.contains(usuario);
 	}
 }

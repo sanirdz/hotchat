@@ -20,7 +20,8 @@ import br.com.paulo.hotchat.api.resource.ContatoDTO;
 import br.com.paulo.hotchat.api.resource.SalvarUsuarioDTO;
 import br.com.paulo.hotchat.domain.Contato;
 import br.com.paulo.hotchat.domain.Usuario;
-import br.com.paulo.hotchat.service.HotChatService;
+import br.com.paulo.hotchat.service.ContatoService;
+import br.com.paulo.hotchat.service.UsuarioService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
@@ -33,10 +34,12 @@ public class UsuariosRestController {
 
 	private static final Logger log = LoggerFactory.getLogger(UsuariosRestController.class);
 	
-	private final HotChatService hotChatService;
+	private final UsuarioService usuarioService;
+	private final ContatoService contatoService;
 	
-	public UsuariosRestController(HotChatService hotChatService) {
-		this.hotChatService = hotChatService;
+	public UsuariosRestController(UsuarioService usuarioService, ContatoService contatoService) {
+		this.usuarioService = usuarioService;
+		this.contatoService = contatoService;
 	}
 
 	@ApiOperation(value = "Salva novos usuários.", tags = {"UsuariosRestController"})
@@ -48,7 +51,7 @@ public class UsuariosRestController {
 	public ResponseEntity<Usuario> salvar(@ApiParam(value = "Dados do usuário para salvar.") @RequestBody @Valid SalvarUsuarioDTO usuario) {
 		log.debug("POST para salvar usuario");
 		//TODO mudar pra usar usar isso
-		Usuario usuarioSalvo = hotChatService.salvar(new Usuario().setLogin(usuario.getLogin()).setSenha(usuario.getSenha()));
+		Usuario usuarioSalvo = usuarioService.salvar(new Usuario().setLogin(usuario.getLogin()).setSenha(usuario.getSenha()));
 		
 		return ResponseEntity.ok(usuarioSalvo);
 	}
@@ -90,13 +93,13 @@ public class UsuariosRestController {
 	public ResponseEntity<Iterable<ContatoDTO>> listar(@ApiIgnore @AuthenticationPrincipal User usuarioLogado) {
 		log.debug("GET para listar contatos do usuário logado.. Usuario logado: {}", usuarioLogado.getUsername());
 		
-		Iterable<Contato> contatos = hotChatService.listarContatos(usuarioLogado.getUsername());
+		Iterable<Usuario> contatos = usuarioService.listarContatos(usuarioLogado.getUsername());
 		List<ContatoDTO> contatosDTO = new ArrayList<>();
 		contatos.forEach(contato -> {
 			contatosDTO.add(new ContatoDTO()
-					.setLogin(contato.getContato().getLogin())
-					.setOnline(contato.getContato().getOnline())
-					.setTotalMensagensNaoLidas(contato.getContato().getTotalMensagensNaoLidas()));
+					.setLogin(contato.getLogin())
+					.setOnline(contato.getOnline())
+					.setTotalMensagensNaoLidas(contato.getTotalMensagensNaoLidas()));
 		});
 		
 		return ResponseEntity.ok(contatosDTO);
@@ -111,7 +114,7 @@ public class UsuariosRestController {
 	@RequestMapping(path = "/novos", produces = "application/json", method = RequestMethod.GET)
 	public ResponseEntity<Iterable<ContatoDTO>> buscarContatosNovos(@ApiIgnore @AuthenticationPrincipal User usuarioLogado) {
 		log.debug("GET para listar usuários que não são contatos. Usuario logado: {}", usuarioLogado.getUsername());
-		Iterable<Usuario> usuarios = hotChatService.listarContatosNovos(usuarioLogado.getUsername());
+		Iterable<Usuario> usuarios = usuarioService.listarContatosNovos(usuarioLogado.getUsername());
 		
 		List<ContatoDTO> contatosDTO = new ArrayList<>();
 		usuarios.forEach(usuario -> {
@@ -134,7 +137,7 @@ public class UsuariosRestController {
 			@ApiIgnore @AuthenticationPrincipal User usuarioLogado) {
 		
 		log.debug("POST para salvar contato");
-		Contato contatoSalvo = hotChatService.salvarContato(usuarioLogado.getUsername(), contato);
+		Contato contatoSalvo = contatoService.salvarContato(usuarioLogado.getUsername(), contato);
 		ContatoDTO dto = new ContatoDTO()
 				.setLogin(contatoSalvo.getContato().getLogin())
 				.setOnline(contatoSalvo.getContato().getOnline());
