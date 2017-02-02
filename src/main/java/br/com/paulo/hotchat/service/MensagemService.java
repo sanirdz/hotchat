@@ -19,7 +19,7 @@ import br.com.paulo.hotchat.websocket.WebSocketService;
 @Service
 public class MensagemService {
 
-	private static final Logger log = LoggerFactory.getLogger(UsuarioService.class);
+	private static final Logger log = LoggerFactory.getLogger(MensagemService.class);
 	
 	private final UsuarioRepository usuarioRepository;
 	private final MensagemRepository mensagemRepository;
