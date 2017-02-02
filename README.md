@@ -17,8 +17,13 @@ Aplicação Web de Chat utilizando a linguagem de programação Java e as tecnol
 * URL: `http://localhost:8080/hotchat`
 * Documentação da API: `http://localhost:8080/hotchat/swagger-ui.html`
 
+#### Informações:
+
+* Foi criada uma aplicação estilo whatsapp web com notificações em tempo real de usuário logado/deslogado e novas mensagens.
+* Foram criados 100 usuarios com a possibilidade de cadastrar novos:
+  * login: usuario(0-99)
+  * senha: senha
+
 #### Pontos extras implementados:
 
 * Criar tela de histórico de mensagens de usuário.
-
-
