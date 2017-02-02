@@ -91,6 +91,7 @@ angular.module('chatapp')
 						.desbloquearContato(contato)
 						.then((result) => {
 						  contato.bloqueado = false;
+						  //TODO recuperar historico se $rootScope.contatoAtivo = contato desbloqueado
 					});
 				})	
 		};
