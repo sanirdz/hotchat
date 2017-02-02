@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.event.EventListener;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -22,10 +23,17 @@ public class WebSocketService {
 	
 	private final SimpMessagingTemplate simpMessagingTemplate;
 	private final UsuariosConectados usuariosConectados;
+	private final String websocketChat;
+	private final String websocketOnlineUsers;
 	
-	public WebSocketService(SimpMessagingTemplate simpMessagingTemplate, UsuariosConectados usuariosConectados) {
+	public WebSocketService(SimpMessagingTemplate simpMessagingTemplate, 
+			UsuariosConectados usuariosConectados,
+			@Value("${hotchat.websocket.chat}") String websocketChat,
+			@Value("${hotchat.websocket.online-users}") String websocketOnlineUsers) {
 		this.simpMessagingTemplate = simpMessagingTemplate;
 		this.usuariosConectados = usuariosConectados;
+		this.websocketChat = websocketChat;
+		this.websocketOnlineUsers = websocketOnlineUsers;
 	}
 
 	public void enviarMensagem(Mensagem mensagem) {
@@ -34,7 +42,7 @@ public class WebSocketService {
 		
 		simpMessagingTemplate.convertAndSendToUser(
 				mensagem.getDestinatario().getLogin(), 
-				"/queue/chat", //TODO parametrizar
+				websocketChat, 
 				new MensagemDTO()
 					.setConteudo(mensagem.getConteudo())
 					.setDataEnvio(mensagem.getDataEnvio())
@@ -50,7 +58,7 @@ public class WebSocketService {
 		payload.put("usuario", usuario);
 		
 		simpMessagingTemplate.convertAndSend(
-				"/queue/online-users", //TODO parametrizar
+				websocketOnlineUsers,
 				payload,
 				headers.getMessageHeaders());
 	}
@@ -63,7 +71,7 @@ public class WebSocketService {
 		payload.put("usuario", usuario);
 		
 		simpMessagingTemplate.convertAndSend(
-				"/queue/online-users", 
+				websocketOnlineUsers, 
 				payload,
 				headers.getMessageHeaders());
 	}
