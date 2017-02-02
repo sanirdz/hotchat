@@ -12,7 +12,10 @@ public interface UsuarioRepository extends CrudRepository<Usuario, Long> {
 
 	@Query("select u from Usuario u where u.login <> :username")
 	Iterable<Usuario> findAllBut(@Param("username") String username);
-	
+
+	@Query("select c.contato from Contato c where c.principal = :principal")
+	Iterable<Usuario> findAllByContatoPrincipal(@Param("principal") Usuario principal);
+
 	//selecionar todos os usuarios que nao sao contatos do principal... ta meio estranho eu acho...
 //	@Query("select distinct u from Usuario u "
 //			+ "left join u.contatos c "

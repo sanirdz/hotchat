@@ -10,15 +10,15 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import br.com.paulo.hotchat.domain.Usuario;
-import br.com.paulo.hotchat.service.HotChatService;
+import br.com.paulo.hotchat.service.UsuarioService;
 
 @Controller
 @RequestMapping("/cadastro")
 public class CadastroUsuarioController {
 
-	private final HotChatService hotChatService;
+	private final UsuarioService hotChatService;
 	
-	public CadastroUsuarioController(HotChatService hotChatService) {
+	public CadastroUsuarioController(UsuarioService hotChatService) {
 		this.hotChatService = hotChatService;
 	}
 

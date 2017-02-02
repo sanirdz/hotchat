@@ -25,9 +25,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import br.com.paulo.hotchat.api.resource.SalvarUsuarioDTO;
-import br.com.paulo.hotchat.domain.Contato;
 import br.com.paulo.hotchat.domain.Usuario;
-import br.com.paulo.hotchat.service.HotChatService;
+import br.com.paulo.hotchat.service.ContatoService;
+import br.com.paulo.hotchat.service.UsuarioService;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest(value = UsuariosRestController.class)
@@ -38,7 +38,10 @@ public class UsuariosRestControllerTest {
 	private MockMvc mvc;
 	
 	@MockBean
-	private HotChatService hotChatService;
+	private UsuarioService usuarioService;
+	
+	@MockBean
+	private ContatoService contatoService;
 	
 	private ObjectMapper mapper;
 	
@@ -50,7 +53,7 @@ public class UsuariosRestControllerTest {
 	@Test
 	public void postComBodyCorretoRetorna200() throws Exception {
 		SalvarUsuarioDTO usuario = new SalvarUsuarioDTO().setLogin("login").setSenha("senha");
-		given(hotChatService.salvar(any(Usuario.class))).willAnswer(new Answer<Usuario>() {
+		given(usuarioService.salvar(any(Usuario.class))).willAnswer(new Answer<Usuario>() {
 			@Override
 			public Usuario answer(InvocationOnMock invocation) throws Throwable {
 				return invocation.getArgumentAt(0, Usuario.class).setId(1L).setVersion(0L).setEnabled(true);
@@ -85,10 +88,10 @@ public class UsuariosRestControllerTest {
 	
 	@Test
 	public void getRetorna200MaisListaComDoisUsuarios() throws Exception {
-		ArrayList<Contato> lista = new ArrayList<>();
-		lista.add(new Contato().setContato(new Usuario().setLogin("usuario1")));
-		lista.add(new Contato().setContato(new Usuario().setLogin("usuario2")));
-		given(hotChatService.listarContatos("paulo")).willReturn(lista);
+		ArrayList<Usuario> lista = new ArrayList<>();
+		lista.add(new Usuario().setLogin("usuario1"));
+		lista.add(new Usuario().setLogin("usuario2"));
+		given(usuarioService.listarContatos("paulo")).willReturn(lista);
 		
 		mvc.perform(get("/api/usuarios/")
 				.contentType(MediaType.APPLICATION_JSON))

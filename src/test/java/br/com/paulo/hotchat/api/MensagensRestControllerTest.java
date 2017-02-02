@@ -1,10 +1,8 @@
 package br.com.paulo.hotchat.api;
 
-import static org.mockito.BDDMockito.given;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.mockito.BDDMockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.util.ArrayList;
 
@@ -24,7 +22,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import br.com.paulo.hotchat.api.resource.EnviarMensagemDTO;
 import br.com.paulo.hotchat.domain.Mensagem;
 import br.com.paulo.hotchat.domain.Usuario;
-import br.com.paulo.hotchat.service.HotChatService;
+import br.com.paulo.hotchat.service.MensagemService;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest(value = MensagensRestController.class)
@@ -35,7 +33,7 @@ public class MensagensRestControllerTest {
 	private MockMvc mvc;
 	
 	@MockBean
-	private HotChatService hotChatService;
+	private MensagemService mensagemService;
 	
 	private ObjectMapper mapper;
 	
@@ -45,7 +43,7 @@ public class MensagensRestControllerTest {
 	}
 
 	@Test
-	public void postComBodyCorretoRetorna200() throws Exception {
+	public void postEnviarMensagemComBodyCorretoRetorna200() throws Exception {
 		EnviarMensagemDTO mensagem = new EnviarMensagemDTO().setConteudo("conteudo").setLoginDestinatario("login");
 		
 		mvc.perform(post("/api/mensagens")
@@ -55,7 +53,7 @@ public class MensagensRestControllerTest {
 	}
 
 	@Test
-	public void postComBodyInvalidoRetorna400() throws Exception {
+	public void postEnviarMensagemComBodyInvalidoRetorna400() throws Exception {
 		mvc.perform(post("/api/mensagens")
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(mapper.writeValueAsString(new EnviarMensagemDTO())))				
@@ -63,10 +61,30 @@ public class MensagensRestControllerTest {
 	}
 	
 	@Test
-	public void postSemBodyRetorna400() throws Exception {
+	public void postEnviarMensagemSemBodyRetorna400() throws Exception {
 		mvc.perform(post("/api/mensagens")
 				.contentType(MediaType.APPLICATION_JSON))
 			.andExpect(status().isBadRequest());
+	}
+	
+	@Test
+	public void postMarcarLidasRetorna200() throws Exception {
+		given(mensagemService.marcarMensagensLidas("emissor", "paulo")).willReturn(5);
+		
+		mvc.perform(post("/api/mensagens/emissor/marcarLidas")
+				.contentType(MediaType.APPLICATION_JSON))
+			.andExpect(status().isOk())
+			.andExpect(content().string("5"));
+	}
+	
+	@Test
+	public void postMarcarLidasRetorna200EmissorInexistente() throws Exception {
+		given(mensagemService.marcarMensagensLidas("emissor2", "paulo")).willReturn(5);
+		
+		mvc.perform(post("/api/mensagens/emissor/marcarLidas")
+				.contentType(MediaType.APPLICATION_JSON))
+			.andExpect(status().isOk())
+			.andExpect(content().string("0"));
 	}
 	
 	@Test
@@ -74,13 +92,12 @@ public class MensagensRestControllerTest {
 		ArrayList<Mensagem> lista = new ArrayList<>();
 		lista.add(new Mensagem().setConteudo("conteudo1").setEmissor(new Usuario().setLogin("login1")));
 		lista.add(new Mensagem().setConteudo("conteudo2").setEmissor(new Usuario().setLogin("login2")));
-		given(hotChatService.listarMensagensDestinatarioEmissor("destinatario", "paulo")).willReturn(lista);
+		given(mensagemService.listarMensagensDestinatarioEmissor("destinatario", "paulo")).willReturn(lista);
 		
 		mvc.perform(get("/api/mensagens/destinatario")
 				.contentType(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk())
 			.andExpect(jsonPath("$[0].conteudo").value("conteudo1"))
 			.andExpect(jsonPath("$[1].conteudo").value("conteudo2"));
-		
 	}
 }
