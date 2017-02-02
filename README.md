@@ -29,3 +29,4 @@ Aplicação Web de Chat utilizando a linguagem de programação Java e as tecnol
 
 * Criar tela de histórico de mensagens de usuário.
 * Criação de lista de contatos. (Precisa de mais refinamento)
+* Bloqueio e desbloqueio de usuários.
