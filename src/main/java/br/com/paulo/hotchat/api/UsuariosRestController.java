@@ -79,7 +79,8 @@ public class UsuariosRestController {
 	public ResponseEntity<Void> bloquear(@ApiParam("Login do contato") @PathVariable("contato") String contato,
 			@ApiIgnore @AuthenticationPrincipal User usuarioLogado) {
 		log.debug("POST para bloquear contato");
-		//TODO bloqueio contato
+		
+		contatoService.bloquear(usuarioLogado.getUsername(), contato);
 		
 		return ResponseEntity.ok().build();
 	}
@@ -93,7 +94,8 @@ public class UsuariosRestController {
 	public ResponseEntity<Void> desbloquear(@ApiParam("Login do contato") @PathVariable("contato") String contato,
 			@ApiIgnore @AuthenticationPrincipal User usuarioLogado) {
 		log.debug("POST para desbloquear contato");
-		//TODO desbloqueio contato
+
+		contatoService.desbloquear(usuarioLogado.getUsername(), contato);
 		
 		return ResponseEntity.ok().build();
 	}
@@ -107,13 +109,14 @@ public class UsuariosRestController {
 	public ResponseEntity<Iterable<ContatoDTO>> listar(@ApiIgnore @AuthenticationPrincipal User usuarioLogado) {
 		log.debug("GET para listar contatos do usuário logado.. Usuario logado: {}", usuarioLogado.getUsername());
 		
-		Iterable<Usuario> contatos = usuarioService.listarContatos(usuarioLogado.getUsername());
+		Iterable<Contato> contatos = contatoService.listarContatos(usuarioLogado.getUsername());
 		List<ContatoDTO> contatosDTO = new ArrayList<>();
 		contatos.forEach(contato -> {
 			contatosDTO.add(new ContatoDTO()
-					.setLogin(contato.getLogin())
-					.setOnline(contato.getOnline())
-					.setTotalMensagensNaoLidas(contato.getTotalMensagensNaoLidas()));
+					.setLogin(contato.getContato().getLogin())
+					.setOnline(contato.getContato().getOnline())
+					.setBloqueado(contato.getBloqueado())
+					.setTotalMensagensNaoLidas(contato.getContato().getTotalMensagensNaoLidas()));
 		});
 		
 		return ResponseEntity.ok(contatosDTO);

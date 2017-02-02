@@ -75,6 +75,7 @@ public class BootstrapData {
 			paulo3.setSenha(passwordEncoder.encode("senha"));
 			usuarioRepository.save(paulo3);
 			userRoleRepository.save(new UserRole().setUsername("paulo3").setAuthority("ROLE_USER"));
+			contatoRepository.save(new Contato().setContato(paulo3).setPrincipal(paulo).setBloqueado(true));
 			
 			Mensagem mensagem = new Mensagem();
 			mensagem.setDataEnvio(LocalDateTime.now());
