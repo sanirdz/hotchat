@@ -19,10 +19,11 @@ Aplicação Web de Chat utilizando a linguagem de programação Java e as tecnol
 
 #### Informações:
 
-* Foi criada uma aplicação estilo whatsapp web com notificações em tempo real de usuário logado/deslogado e novas mensagens.
-* Foram criados 100 usuarios com a possibilidade de cadastrar novos:
+* Foi criada uma aplicação estilo whatsapp-web com notificações em tempo real de usuário logado/deslogado e novas mensagens.
+* Foram criados 100 usuários com a possibilidade de cadastrar novos:
   * login: usuario(0-99)
   * senha: senha
+* Aprendi Angular e WebSocket nesse desafio, portanto pode ter alguma coisa esquisita... 
 
 #### Pontos extras implementados:
 
