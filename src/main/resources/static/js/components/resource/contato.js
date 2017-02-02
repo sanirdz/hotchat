@@ -34,5 +34,12 @@ angular.module('chatapp')
 					contato: '@contato'
 				}
 	        },
+	        excluir: {
+	        	url: API_URL + '/api/usuarios/:contato/excluir',
+	            method: 'POST',
+				params: {
+					contato: '@contato'
+				}
+	        },
 		});
 	});

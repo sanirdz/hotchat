@@ -56,9 +56,23 @@ public class UsuariosRestController {
 		return ResponseEntity.ok(usuarioSalvo);
 	}
 
-	@ApiOperation(value = "Bloqueia um usuário.", tags = {"UsuariosRestController"})
+	@ApiOperation(value = "Exclui um contato.", tags = {"UsuariosRestController"})
 	@ApiResponses({
-			@ApiResponse(code = 200, message = "Usuário bloqueado com sucesso."),
+			@ApiResponse(code = 200, message = "Usuário excluído com sucesso."),
+			@ApiResponse(code = 400, message = "Dados da requisição inválidos."),
+			@ApiResponse(code = 500, message = "Erro inesperado no servidor.")})
+	@RequestMapping(path="/{contato}/excluir", method = RequestMethod.POST, produces = "application/json")
+	public ResponseEntity<Void> excluir(@ApiParam("Login do contato") @PathVariable("contato") String contato,
+			@ApiIgnore @AuthenticationPrincipal User usuarioLogado) {
+		log.debug("POST para excluir contato");
+		
+		contatoService.excluir(usuarioLogado.getUsername(), contato);
+		return ResponseEntity.ok().build();
+	}
+	
+	@ApiOperation(value = "Bloqueia um contato.", tags = {"UsuariosRestController"})
+	@ApiResponses({
+			@ApiResponse(code = 200, message = "Contato bloqueado com sucesso."),
 			@ApiResponse(code = 400, message = "Dados da requisição inválidos."),
 			@ApiResponse(code = 500, message = "Erro inesperado no servidor.")})
 	@RequestMapping(path="/{contato}/bloquear", method = RequestMethod.POST, produces = "application/json")
@@ -70,9 +84,9 @@ public class UsuariosRestController {
 		return ResponseEntity.ok().build();
 	}
 	
-	@ApiOperation(value = "Desbloqueia um usuário.", tags = {"UsuariosRestController"})
+	@ApiOperation(value = "Desbloqueia um contato.", tags = {"UsuariosRestController"})
 	@ApiResponses({
-			@ApiResponse(code = 200, message = "Usuário desbloqueado com sucesso."),
+			@ApiResponse(code = 200, message = "Contato desbloqueado com sucesso."),
 			@ApiResponse(code = 400, message = "Dados da requisição inválidos."),
 			@ApiResponse(code = 500, message = "Erro inesperado no servidor.")})
 	@RequestMapping(path="/{contato}/desbloquear", method = RequestMethod.POST, produces = "application/json")

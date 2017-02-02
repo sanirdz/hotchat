@@ -36,7 +36,7 @@ angular.module('chatapp')
 		$scope.confirmExcluirUsuario = function(contato) {
 			swal({
 				  title: 'Tem certeza?',
-				  text: "Você irá excluir o usuário " + contato.login + ".",
+				  text: "Você irá excluir o contato " + contato.login + ".",
 				  type: 'warning',
 				  showCancelButton: true,
 				  confirmButtonColor: '#d33',
@@ -44,13 +44,21 @@ angular.module('chatapp')
 				  confirmButtonText: 'Excluir'
 				}).then(function () {
 					ApiService
-						.bloquearContato(contato)
+						.excluirContato(contato)
 						.then((result) => {
 							  swal(
 							    'Sucesso!',
 							    'O contato foi excluído com sucesso.',
 							    'success'
-							  )
+							  );
+							  console.log('removendo o contato ' + contato.login +  ' da lista de contatos')
+							  $scope.contatos = $scope.contatos.filter(function(el) {
+								 return el.login !== contato.login;
+							  });
+							  
+							  if($rootScope.contatoAtivo.login == contato.login) {
+								  $rootScope.contatoAtivo = null;
+							  }
 						});
 				})	
 		};
@@ -58,7 +66,7 @@ angular.module('chatapp')
 		$scope.confirmBloqueioUsuario = function(contato) {
 			swal({
 				  title: 'Tem certeza?',
-				  text: "Você irá bloquear o usuário " + contato.login + ".",
+				  text: "Você irá bloquear o contato " + contato.login + ".",
 				  type: 'warning',
 				  showCancelButton: true,
 				  confirmButtonColor: '#d33',
@@ -81,7 +89,7 @@ angular.module('chatapp')
 		$scope.confirmDesbloqueioUsuario = function(contato){
 			swal({
 				  title: 'Tem certeza?',
-				  text: "Você irá desbloquear o usuário " + contato.login + ".",
+				  text: "Você irá desbloquear o contato " + contato.login + ".",
 				  type: 'warning',
 				  showCancelButton: true,
 				  confirmButtonColor: '#d33',

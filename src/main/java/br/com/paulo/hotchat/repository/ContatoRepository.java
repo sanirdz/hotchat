@@ -9,4 +9,6 @@ public interface ContatoRepository extends CrudRepository<Contato, Long> {
 
 	Iterable<Contato> findAllByPrincipal(Usuario principal);
 
+	Contato findByPrincipalAndContato(Usuario principal, Usuario contato);
+
 }

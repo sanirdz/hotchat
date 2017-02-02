@@ -18,6 +18,10 @@ angular.module('chatapp')
     service.bloquearContato = function(contato) {
     	return Contato.bloquear({"contato": contato.login}).$promise;
     };
+
+    service.excluirContato = function(contato) {
+    	return Contato.excluir({"contato": contato.login}).$promise;
+    };
     
     service.desbloquearContato = function(contato) {
     	return Contato.desbloquear({"contato": contato.login}).$promise;
