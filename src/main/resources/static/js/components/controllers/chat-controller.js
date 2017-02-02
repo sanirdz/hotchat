@@ -9,7 +9,7 @@ angular.module('chatapp')
 			
 			ApiService.enviaMensagem(destinatario, mensagem);
 			
-			$scope.historico.push({'conteudo' : mensagem, 'emissor': {'login': $rootScope.me}, 'dataEnvio': new Date()});
+			$scope.historico.push({'conteudo' : mensagem, 'emissor': $rootScope.me, 'dataEnvio': new Date()});
 		}
 		
 		function scrollToBottom(length) {
@@ -35,10 +35,10 @@ angular.module('chatapp')
 		$scope.$on('nova-mensagem', function(event, data) {
 			var mensagem = data.mensagem;
 			
-			if($rootScope.contatoAtivo && mensagem.emissor.login == $rootScope.contatoAtivo.login) {
+			if($rootScope.contatoAtivo && mensagem.emissor == $rootScope.contatoAtivo.login) {
 	        	if($scope.historico) {
-	        		console.log('adcionando msg do ' + mensagem.emissor.login + '...');
-		        	$scope.historico.push({'conteudo' : mensagem.conteudo, 'emissor': {'login': mensagem.emissor.login}, 'dataEnvio': mensagem.dataEnvio});
+	        		console.log('adcionando msg do ' + mensagem.emissor + '...');
+		        	$scope.historico.push({'conteudo' : mensagem.conteudo, 'emissor': {'login': mensagem.emissor}, 'dataEnvio': mensagem.dataEnvio});
 		        	
 		        	$scope.$apply();
 	        	}

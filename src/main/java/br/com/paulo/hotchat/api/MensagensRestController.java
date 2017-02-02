@@ -1,5 +1,8 @@
 package br.com.paulo.hotchat.api;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.validation.Valid;
 
 import org.slf4j.Logger;
@@ -14,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.paulo.hotchat.api.resource.EnviarMensagemDTO;
+import br.com.paulo.hotchat.api.resource.MensagemDTO;
 import br.com.paulo.hotchat.domain.Mensagem;
 import br.com.paulo.hotchat.domain.Usuario;
 import br.com.paulo.hotchat.service.HotChatService;
@@ -41,17 +45,24 @@ public class MensagensRestController {
 			@ApiResponse(code = 400, message = "Dados da requisição inválidos."),
 			@ApiResponse(code = 500, message = "Erro inesperado no servidor.")})
 	@RequestMapping(path="/{destinatario}", produces = "application/json", method = RequestMethod.GET)
-	public ResponseEntity<Iterable<Mensagem>> listarMensagens(
+	public ResponseEntity<Iterable<MensagemDTO>> listarMensagens(
 			@ApiIgnore @AuthenticationPrincipal User usuarioLogado, 
 			@ApiParam("Login do destinatário") @PathVariable("destinatario") String destinatario) {
 		
 		log.debug("GET para listar mensagens. Usuário logado: {}", usuarioLogado.getUsername());
 		//TODO incluir parametros de paginacao
-		//TODO fazer um DTO mais clean pro retorno
 		
 		Iterable<Mensagem> mensagens = hotChatService.listarMensagensDestinatarioEmissor(destinatario, usuarioLogado.getUsername());
+		List<MensagemDTO> mensagensDTO = new ArrayList<>();
 		
-		return ResponseEntity.ok(mensagens);
+		mensagens.forEach(m -> {
+			mensagensDTO.add(new MensagemDTO()
+					.setConteudo(m.getConteudo())
+					.setDataEnvio(m.getDataEnvio())
+					.setEmissor(m.getEmissor().getLogin()));
+		});
+		
+		return ResponseEntity.ok(mensagensDTO);
 	}
 	
 	@ApiOperation(value = "Marca as mensagens enviadas por um emissor ao usuario logado como lidas", tags = {"MensagensRestController"})
@@ -75,7 +86,8 @@ public class MensagensRestController {
 			@ApiResponse(code = 400, message = "Dados da requisição inválidos."),
 			@ApiResponse(code = 500, message = "Erro inesperado no servidor.")})
 	@RequestMapping(method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
-	public ResponseEntity<Void> enviarMensagem(@RequestBody @Valid EnviarMensagemDTO mensagem, @ApiIgnore @AuthenticationPrincipal User usuarioLogado) {
+	public ResponseEntity<Void> enviarMensagem(@RequestBody @Valid EnviarMensagemDTO mensagem, 
+			@ApiIgnore @AuthenticationPrincipal User usuarioLogado) {
 		log.debug("POST para enviar mensagem. Usuário logado: {}", usuarioLogado.getUsername());
 		hotChatService.enviarMensagem(
 				new Mensagem().setConteudo(mensagem.getConteudo()).setDestinatario(new Usuario().setLogin(mensagem.getLoginDestinatario())), 

@@ -27,3 +27,4 @@ Aplicação Web de Chat utilizando a linguagem de programação Java e as tecnol
 #### Pontos extras implementados:
 
 * Criar tela de histórico de mensagens de usuário.
+* Criação de lista de contatos. (Precisa de mais refinamento)

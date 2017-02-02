@@ -1,10 +1,13 @@
 package br.com.paulo.hotchat.domain;
 
+import java.util.Set;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.persistence.Version;
@@ -28,6 +31,12 @@ public class Usuario {
 	private String senha;
 
 	private Boolean enabled;
+	
+	@OneToMany(mappedBy = "principal")
+	private Set<Contato> contatos;
+	
+	@OneToMany(mappedBy = "contato")
+	private Set<Contato> contatosDe;
 
 	@Version
 	private Long version;
@@ -123,6 +132,24 @@ public class Usuario {
 
 	public Usuario setTotalMensagensNaoLidas(Integer totalMensagensNaoLidas) {
 		this.totalMensagensNaoLidas = totalMensagensNaoLidas;
+		return this;
+	}
+
+	public Set<Contato> getContatos() {
+		return contatos;
+	}
+
+	public Usuario setContatos(Set<Contato> contatos) {
+		this.contatos = contatos;
+		return this;
+	}
+
+	public Set<Contato> getContatosDe() {
+		return contatosDe;
+	}
+
+	public Usuario setContatosDe(Set<Contato> contatosDe) {
+		this.contatosDe = contatosDe;
 		return this;
 	}
 }

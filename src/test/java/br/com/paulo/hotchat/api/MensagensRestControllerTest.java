@@ -23,6 +23,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import br.com.paulo.hotchat.api.resource.EnviarMensagemDTO;
 import br.com.paulo.hotchat.domain.Mensagem;
+import br.com.paulo.hotchat.domain.Usuario;
 import br.com.paulo.hotchat.service.HotChatService;
 
 @RunWith(SpringRunner.class)
@@ -71,12 +72,11 @@ public class MensagensRestControllerTest {
 	@Test
 	public void getRetorna200MaisListaComDuasMensagens() throws Exception {
 		ArrayList<Mensagem> lista = new ArrayList<>();
-		lista.add(new Mensagem().setConteudo("conteudo1"));
-		lista.add(new Mensagem().setConteudo("conteudo2"));
+		lista.add(new Mensagem().setConteudo("conteudo1").setEmissor(new Usuario().setLogin("login1")));
+		lista.add(new Mensagem().setConteudo("conteudo2").setEmissor(new Usuario().setLogin("login2")));
 		given(hotChatService.listarMensagensDestinatarioEmissor("destinatario", "paulo")).willReturn(lista);
 		
-		mvc.perform(get("/api/mensagens/")
-				.param("destinatario", "destinatario")
+		mvc.perform(get("/api/mensagens/destinatario")
 				.contentType(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk())
 			.andExpect(jsonPath("$[0].conteudo").value("conteudo1"))

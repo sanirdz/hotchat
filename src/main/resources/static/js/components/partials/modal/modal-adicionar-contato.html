@@ -1,0 +1,13 @@
+
+<div class="modal-header">
+	<h3 class="modal-title" id="modal-title">Adicionar Contato</h3>
+</div>
+<div class="modal-body modal-convite" id="modal-body">
+	<div class="container-usuarios">
+		<ul>
+		<li ng-repeat="contato in contatosNovos">
+			<a class="link-contato" href="#" ng-click="adicionarContato(contato)">{{contato.login}}</a>
+		</li>
+		</ul>
+	</div>
+</div>

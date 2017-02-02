@@ -1,5 +1,8 @@
 package br.com.paulo.hotchat.api;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.validation.Valid;
 
 import org.slf4j.Logger;
@@ -7,12 +10,15 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.User;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.com.paulo.hotchat.api.resource.ContatoDTO;
 import br.com.paulo.hotchat.api.resource.SalvarUsuarioDTO;
+import br.com.paulo.hotchat.domain.Contato;
 import br.com.paulo.hotchat.domain.Usuario;
 import br.com.paulo.hotchat.service.HotChatService;
 import io.swagger.annotations.ApiOperation;
@@ -46,18 +52,93 @@ public class UsuariosRestController {
 		
 		return ResponseEntity.ok(usuarioSalvo);
 	}
+
+	@ApiOperation(value = "Bloqueia um usuário.", tags = {"UsuariosRestController"})
+	@ApiResponses({
+			@ApiResponse(code = 200, message = "Usuário bloqueado com sucesso."),
+			@ApiResponse(code = 400, message = "Dados da requisição inválidos."),
+			@ApiResponse(code = 500, message = "Erro inesperado no servidor.")})
+	@RequestMapping(path="/{contato}/bloquear", method = RequestMethod.POST, produces = "application/json")
+	public ResponseEntity<Void> bloquear(@ApiParam("Login do contato") @PathVariable("contato") String contato,
+			@ApiIgnore @AuthenticationPrincipal User usuarioLogado) {
+		log.debug("POST para bloquear contato");
+		//TODO bloqueio contato
+		
+		return ResponseEntity.ok().build();
+	}
 	
-	@ApiOperation(value = "Lista usuários, excluindo o usuário logado.", tags = {"UsuariosRestController"})
+	@ApiOperation(value = "Desbloqueia um usuário.", tags = {"UsuariosRestController"})
+	@ApiResponses({
+			@ApiResponse(code = 200, message = "Usuário desbloqueado com sucesso."),
+			@ApiResponse(code = 400, message = "Dados da requisição inválidos."),
+			@ApiResponse(code = 500, message = "Erro inesperado no servidor.")})
+	@RequestMapping(path="/{contato}/desbloquear", method = RequestMethod.POST, produces = "application/json")
+	public ResponseEntity<Void> desbloquear(@ApiParam("Login do contato") @PathVariable("contato") String contato,
+			@ApiIgnore @AuthenticationPrincipal User usuarioLogado) {
+		log.debug("POST para desbloquear contato");
+		//TODO desbloqueio contato
+		
+		return ResponseEntity.ok().build();
+	}
+	
+	@ApiOperation(value = "Lista contatos do usuário logado.", tags = {"UsuariosRestController"})
+	@ApiResponses({
+			@ApiResponse(code = 200, message = "Contatos listados com sucesso."),
+			@ApiResponse(code = 400, message = "Dados da requisição inválidos."),
+			@ApiResponse(code = 500, message = "Erro inesperado no servidor.")})
+	@RequestMapping(produces = "application/json", method = RequestMethod.GET)
+	public ResponseEntity<Iterable<ContatoDTO>> listar(@ApiIgnore @AuthenticationPrincipal User usuarioLogado) {
+		log.debug("GET para listar contatos do usuário logado.. Usuario logado: {}", usuarioLogado.getUsername());
+		
+		Iterable<Contato> contatos = hotChatService.listarContatos(usuarioLogado.getUsername());
+		List<ContatoDTO> contatosDTO = new ArrayList<>();
+		contatos.forEach(contato -> {
+			contatosDTO.add(new ContatoDTO()
+					.setLogin(contato.getContato().getLogin())
+					.setOnline(contato.getContato().getOnline())
+					.setTotalMensagensNaoLidas(contato.getContato().getTotalMensagensNaoLidas()));
+		});
+		
+		return ResponseEntity.ok(contatosDTO);
+	}
+	
+	
+	@ApiOperation(value = "Lista usuários que não são contatos do usuário logado.", tags = {"UsuariosRestController"})
 	@ApiResponses({
 			@ApiResponse(code = 200, message = "Usuários listados com sucesso."),
 			@ApiResponse(code = 400, message = "Dados da requisição inválidos."),
 			@ApiResponse(code = 500, message = "Erro inesperado no servidor.")})
-	@RequestMapping(produces = "application/json", method = RequestMethod.GET)
-	public ResponseEntity<Iterable<Usuario>> listar(@ApiIgnore @AuthenticationPrincipal User usuarioLogado) {
-		log.debug("GET para listar usuarios. Usuario logado: {}", usuarioLogado.getUsername());
+	@RequestMapping(path = "/novos", produces = "application/json", method = RequestMethod.GET)
+	public ResponseEntity<Iterable<ContatoDTO>> buscarContatosNovos(@ApiIgnore @AuthenticationPrincipal User usuarioLogado) {
+		log.debug("GET para listar usuários que não são contatos. Usuario logado: {}", usuarioLogado.getUsername());
+		Iterable<Usuario> usuarios = hotChatService.listarContatosNovos(usuarioLogado.getUsername());
 		
-		Iterable<Usuario> usuarios = hotChatService.listarUsuarios(usuarioLogado.getUsername());
+		List<ContatoDTO> contatosDTO = new ArrayList<>();
+		usuarios.forEach(usuario -> {
+			contatosDTO.add(new ContatoDTO()
+					.setLogin(usuario.getLogin())
+					.setOnline(usuario.getOnline())
+					.setTotalMensagensNaoLidas(usuario.getTotalMensagensNaoLidas()));
+		});
 		
-		return ResponseEntity.ok(usuarios);
+		return ResponseEntity.ok(contatosDTO);
+	}
+	
+	@ApiOperation(value = "Salva um novo contato para o usuário logado.", tags = {"UsuariosRestController"})
+	@ApiResponses({
+			@ApiResponse(code = 200, message = "Contato salvo com sucesso."),
+			@ApiResponse(code = 400, message = "Dados da requisição inválidos."),
+			@ApiResponse(code = 500, message = "Erro inesperado no servidor.")})
+	@RequestMapping(path = "/{contato}", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
+	public ResponseEntity<ContatoDTO> salvarContato(@ApiParam("Login do usuário") @PathVariable("contato") String contato,
+			@ApiIgnore @AuthenticationPrincipal User usuarioLogado) {
+		
+		log.debug("POST para salvar contato");
+		Contato contatoSalvo = hotChatService.salvarContato(usuarioLogado.getUsername(), contato);
+		ContatoDTO dto = new ContatoDTO()
+				.setLogin(contatoSalvo.getContato().getLogin())
+				.setOnline(contatoSalvo.getContato().getOnline());
+		
+		return ResponseEntity.ok(dto);
 	}
 }

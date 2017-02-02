@@ -1,8 +1,11 @@
 package br.com.paulo.hotchat.api;
 
-import static org.mockito.BDDMockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Matchers.any;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.ArrayList;
 
@@ -22,6 +25,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import br.com.paulo.hotchat.api.resource.SalvarUsuarioDTO;
+import br.com.paulo.hotchat.domain.Contato;
 import br.com.paulo.hotchat.domain.Usuario;
 import br.com.paulo.hotchat.service.HotChatService;
 
@@ -81,10 +85,10 @@ public class UsuariosRestControllerTest {
 	
 	@Test
 	public void getRetorna200MaisListaComDoisUsuarios() throws Exception {
-		ArrayList<Usuario> lista = new ArrayList<>();
-		lista.add(new Usuario().setLogin("usuario1"));
-		lista.add(new Usuario().setLogin("usuario2"));
-		given(hotChatService.listarUsuarios("paulo")).willReturn(lista);
+		ArrayList<Contato> lista = new ArrayList<>();
+		lista.add(new Contato().setContato(new Usuario().setLogin("usuario1")));
+		lista.add(new Contato().setContato(new Usuario().setLogin("usuario2")));
+		given(hotChatService.listarContatos("paulo")).willReturn(lista);
 		
 		mvc.perform(get("/api/usuarios/")
 				.contentType(MediaType.APPLICATION_JSON))

@@ -7,8 +7,8 @@
 		<ul>
 			<li ng-repeat="msg in historico">
 				<div class="cht-bloco">
-					<div ng-if="msg.emissor.login == me" class="cht-enviada">{{msg.dataEnvio}} - {{msg.conteudo}}</div>
-					<div ng-if="msg.emissor.login != me" class="cht-recebida">{{msg.dataEnvio}} - {{msg.conteudo}}</div>
+					<div ng-if="msg.emissor == me" class="cht-enviada">{{msg.dataEnvio}} - {{msg.conteudo}}</div>
+					<div ng-if="msg.emissor != me" class="cht-recebida">{{msg.dataEnvio}} - {{msg.conteudo}}</div>
 				</div>
 			</li>			
 		</ul>
@@ -31,5 +31,7 @@
 
 
 <section class="cht-container" ng-if="!contatoAtivo">
-	Bem vindo ao HotChat
+	<div style="position:fixed; left: 50%; top:50%;" >
+	<img alt="" src="/hotchat/images/hotchat.jpeg">
+	</div>
 </section>

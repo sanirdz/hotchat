@@ -17,9 +17,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.socket.messaging.SessionConnectEvent;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 
+import br.com.paulo.hotchat.api.resource.MensagemDTO;
+import br.com.paulo.hotchat.domain.Contato;
 import br.com.paulo.hotchat.domain.Mensagem;
 import br.com.paulo.hotchat.domain.UserRole;
 import br.com.paulo.hotchat.domain.Usuario;
+import br.com.paulo.hotchat.repository.ContatoRepository;
 import br.com.paulo.hotchat.repository.MensagemRepository;
 import br.com.paulo.hotchat.repository.UserRoleRepository;
 import br.com.paulo.hotchat.repository.UsuarioRepository;
@@ -28,11 +31,14 @@ import br.com.paulo.hotchat.websocket.UsuariosConectados;
 @Service
 public class HotChatService {
 
+	//TODO tem muita coisa acontecendo aqui...
+	
 	private static final Logger log = LoggerFactory.getLogger(HotChatService.class);
 
 	private final UsuarioRepository usuarioRepository;
 	private final UserRoleRepository userRoleRepository;
 	private final MensagemRepository mensagemRepository;
+	private final ContatoRepository contatoRepository;
 	private final SimpMessagingTemplate simpMessagingTemplate;
 	private final UsuariosConectados usuariosConectados;
 	private final PasswordEncoder passwordEncoder;
@@ -42,7 +48,8 @@ public class HotChatService {
 			SimpMessagingTemplate simpMessagingTemplate,
 			UsuariosConectados usuariosConectados,
 			PasswordEncoder passwordEncoder,
-			UserRoleRepository userRoleRepository) {
+			UserRoleRepository userRoleRepository,
+			ContatoRepository contatoRepository) {
 
 		this.usuarioRepository = usuarioRepository;
 		this.mensagemRepository = mensagemRepository;
@@ -50,17 +57,23 @@ public class HotChatService {
 		this.usuariosConectados = usuariosConectados;
 		this.passwordEncoder = passwordEncoder;
 		this.userRoleRepository = userRoleRepository;
+		this.contatoRepository = contatoRepository;
 	}
 
-	public Iterable<Usuario> listarUsuarios(String username) {
-		Iterable<Usuario> usuarios = usuarioRepository.findAllBut(username);
+	public Iterable<Contato> listarContatos(String username) {
+		Iterable<Contato> contatos = contatoRepository.findAllByPrincipal(usuarioRepository.findByLogin(username));
 
-		usuarios.forEach(usuario -> {
-			usuario.setOnline(usuariosConectados.estaConectado(usuario));
-			usuario.setTotalMensagensNaoLidas(recuperaQuantidadeMensagensNaoLidas(usuario.getLogin(), username));
+		contatos.forEach(contato -> {
+			contato.getContato().setOnline(usuariosConectados.estaConectado(contato.getContato()));
+			contato.getContato().setTotalMensagensNaoLidas(recuperaQuantidadeMensagensNaoLidas(contato.getContato().getLogin(), username));
 		});
 
-		return usuarios;
+		return contatos;
+	}
+	
+	public Iterable<Usuario> listarContatosNovos(String username) {
+//		TODO listar quem nao é contato
+		return usuarioRepository.findAllBut(username);
 	}
 
 	public Iterable<Mensagem> listarMensagensDestinatarioEmissor(String loginDestinatario, String loginEmissor) {
@@ -123,7 +136,10 @@ public class HotChatService {
 			simpMessagingTemplate.convertAndSendToUser(
 					mensagem.getDestinatario().getLogin(), 
 					"/queue/chat", 
-					mensagem,
+					new MensagemDTO()
+						.setConteudo(mensagem.getConteudo())
+						.setDataEnvio(mensagem.getDataEnvio())
+						.setEmissor(mensagem.getEmissor().getLogin()),
 					headers.getMessageHeaders());
 		}
 		mensagemRepository.save(mensagem);
@@ -174,5 +190,15 @@ public class HotChatService {
 		userRoleRepository.save(new UserRole().setUsername(usuario.getLogin()).setAuthority("ROLE_USER"));
 
 		return usuarioRepository.save(usuario);
+	}
+
+	public Contato salvarContato(String loginUsuario, String loginContato) {
+		Contato contato = new Contato()
+				.setPrincipal(usuarioRepository.findByLogin(loginUsuario))
+				.setContato(usuarioRepository.findByLogin(loginContato));
+		
+		contato.getContato().setOnline(usuariosConectados.estaConectado(contato.getContato()));
+		
+		return contatoRepository.save(contato);
 	}
 }

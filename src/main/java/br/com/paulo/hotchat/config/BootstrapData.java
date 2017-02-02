@@ -10,9 +10,11 @@ import org.springframework.context.event.EventListener;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import br.com.paulo.hotchat.domain.Contato;
 import br.com.paulo.hotchat.domain.Mensagem;
 import br.com.paulo.hotchat.domain.UserRole;
 import br.com.paulo.hotchat.domain.Usuario;
+import br.com.paulo.hotchat.repository.ContatoRepository;
 import br.com.paulo.hotchat.repository.MensagemRepository;
 import br.com.paulo.hotchat.repository.UserRoleRepository;
 import br.com.paulo.hotchat.repository.UsuarioRepository;
@@ -26,12 +28,16 @@ public class BootstrapData {
 	private final UserRoleRepository userRoleRepository;
 	private final MensagemRepository mensagemRepository;
 	private final PasswordEncoder passwordEncoder;
+	private final ContatoRepository contatoRepository;
+
 	private final Boolean fakeData;
+
 	
 	public BootstrapData(UsuarioRepository usuarioRepository, 
 					MensagemRepository mensagemRepository,
 					PasswordEncoder passwordEncoder,
 					UserRoleRepository userRoleRepository,
+					ContatoRepository contatoRepository,
 			@Value("${hotchat.fakedata:false}") Boolean fakeData) {
 		
 		this.usuarioRepository = usuarioRepository;
@@ -39,6 +45,7 @@ public class BootstrapData {
 		this.mensagemRepository = mensagemRepository;
 		this.passwordEncoder = passwordEncoder;
 		this.fakeData = fakeData;
+		this.contatoRepository = contatoRepository;
 	}
 	
 	@EventListener
@@ -59,6 +66,16 @@ public class BootstrapData {
 			usuarioRepository.save(paulo2);
 			userRoleRepository.save(new UserRole().setUsername("paulo2").setAuthority("ROLE_USER"));
 			
+			contatoRepository.save(new Contato().setContato(paulo2).setPrincipal(paulo));
+			contatoRepository.save(new Contato().setContato(paulo).setPrincipal(paulo2));
+			
+			Usuario paulo3 = new Usuario();
+			paulo3.setLogin("paulo3");
+			paulo3.setEnabled(true);
+			paulo3.setSenha(passwordEncoder.encode("senha"));
+			usuarioRepository.save(paulo3);
+			userRoleRepository.save(new UserRole().setUsername("paulo3").setAuthority("ROLE_USER"));
+			
 			Mensagem mensagem = new Mensagem();
 			mensagem.setDataEnvio(LocalDateTime.now());
 			mensagem.setEmissor(paulo2);
@@ -75,14 +92,14 @@ public class BootstrapData {
 			mensagem.setConteudo("Essa é uma mensagem do paulo pro paulo2");
 			mensagemRepository.save(mensagem);
 			
-			for(int i = 0; i < 100; i++) {
-				Usuario usuario = new Usuario();
-				usuario.setLogin("usuario" + i);
-				usuario.setEnabled(true);
-				usuario.setSenha(passwordEncoder.encode("senha"));
-				usuarioRepository.save(usuario);
-				userRoleRepository.save(new UserRole().setUsername("usuario" + i).setAuthority("ROLE_USER"));
-			}
+//			for(int i = 0; i < 100; i++) {
+//				Usuario usuario = new Usuario();
+//				usuario.setLogin("usuario" + i);
+//				usuario.setEnabled(true);
+//				usuario.setSenha(passwordEncoder.encode("senha"));
+//				usuarioRepository.save(usuario);
+//				userRoleRepository.save(new UserRole().setUsername("usuario" + i).setAuthority("ROLE_USER"));
+//			}
 		}		
 	}
 }

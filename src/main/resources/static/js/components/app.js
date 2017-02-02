@@ -1,5 +1,5 @@
 angular
-	.module('chatapp', ['ngResource', 'ngStomp'])
+	.module('chatapp', ['ngResource', 'ngStomp', 'ui.bootstrap'])
 	.constant('API_URL', 'http://localhost:8080/hotchat')
 	.run( function($stomp, $rootScope) {
 		$rootScope.me = $("#me").val();

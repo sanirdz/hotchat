@@ -1,19 +1,49 @@
 <aside class="cht-sidebar">
 	<nav class="cht-menu">
 		<div class="cht-contact">
-			<label><i class="fa fa-user-circle" aria-hidden="true"></i> {{me}}</label>
-			<form action="/hotchat/logout" method="post" id="logout-form">
-				<a href="#" onclick="$('#logout-form').submit();">Sair</a>
-       		</form>
+			<div style="float:left">
+				<label><i class="fa fa-user-circle" aria-hidden="true"></i> {{me}}</label>
+				<form action="/hotchat/logout" method="post" id="logout-form">
+	       		</form>
+       		</div>
+			<div style="float:right">
+				<div class="dropdown">
+					<button data-toggle="dropdown" class="cht-link-config-menu" aria-haspopup="true" aria-expanded="true">
+						<i class="fa fa-ellipsis-v" aria-hidden="true"></i>
+					</button>
+					<ul class="dropdown-menu">
+						<li><a href="#" ng-click="openModalAdicionarContato()">Adicionar contato...</a></li>
+						<li><a href="#" onclick="$('#logout-form').submit();">Sair</a></li>
+					</ul>
+				</div>
+			</div>
 		</div>	
-		<ul class="cht-menu">		
-			<li ng-repeat="contato in contatos" ng-click="selecionaContato(contato)">
-				<a class="link-contato" href="#">{{contato.login}} 
-					<span class="online" ng-if="contato.online">On</span>
-					<span class="offline" ng-if="!contato.online">Off</span>
-					<span class="badge" ng-if="contato.totalMensagensNaoLidas > 0">{{contato.totalMensagensNaoLidas}}</span>
-				</a>
-			</li>			
-		</ul>
+		<div class="cht-container-menu">
+			<ul class="cht-menu">		
+				<li ng-repeat="contato in contatos">
+					<a class="link-contato" href="#" ng-click="selecionaContato(contato)">{{contato.login}} 
+						<span class="online" ng-if="contato.online">On</span>
+						<span class="offline" ng-if="!contato.online">Off</span>
+						<span class="badge" ng-if="contato.totalMensagensNaoLidas > 0">{{contato.totalMensagensNaoLidas}}</span>
+					</a>
+					<div class="dropdown menu-suspenso">
+						<a data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+							<i class="fa fa-chevron-down" aria-hidden="true"></i>
+						</a>
+						<ul class="dropdown-menu" style="left: -145px;">
+							<li><a href="#" ng-click="confirmBloqueioUsuario(contato)">Bloquear</a></li>
+							<li><a href="#" ng-click="confirmDesbloqueioUsuario(contato)">Desbloquear</a></li>
+							<li><a href="#" ng-click="confirmExcluirUsuario(contato)">Excluir</a></li>
+						</ul>
+					</div>
+				</li>		
+			</ul>
+		</div>
 	</nav>
 </aside>
+
+
+<script>
+	var altura  = $(window).height();
+	$(".cht-container-menu").css('height', altura - 70);
+</script>
