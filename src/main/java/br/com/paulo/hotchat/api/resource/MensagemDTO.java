@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 
 public class MensagemDTO {
 
+	private Long id;
 	private String emissor;
 	private LocalDateTime dataEnvio;
 	private String conteudo;
@@ -27,6 +28,13 @@ public class MensagemDTO {
 	}
 	public MensagemDTO setConteudo(String conteudo) {
 		this.conteudo = conteudo;
+		return this;
+	}
+	public Long getId() {
+		return id;
+	}
+	public MensagemDTO setId(Long id) {
+		this.id = id;
 		return this;
 	}
 }

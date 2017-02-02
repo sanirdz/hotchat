@@ -75,21 +75,23 @@ public class MensagemService {
 	}
 
 	public Integer marcarMensagensLidas(String loginEmissor, String loginDestinatario) {
+		log.info("Marcando mensagens como lidas. {} -> {}...", loginEmissor, loginDestinatario);
+
 		Contato contatoEmissor = contatoService.recuperaContato(loginEmissor, loginDestinatario);
 		Contato contatoDestinatario = contatoService.recuperaContato(loginDestinatario, loginEmissor);
 		
 		Integer qtd = 0;
 
 		if(contatoDestinatario != null && BooleanUtils.isNotTrue(contatoDestinatario.getBloqueado())) {
-			log.info("Marcando mensagens como lidas. {} -> {}...", loginEmissor, loginDestinatario);
 			
 			Usuario destinatario = contatoEmissor.getContato();
 			Usuario emissor = contatoEmissor.getPrincipal();
 			
 			Iterable<Mensagem> mensagens = mensagemRepository.findAllByDestinatarioAndEmissorOrderByDataEnvio(destinatario, emissor);	
+			log.debug(mensagens.toString());
 			
 			for (Mensagem mensagem : mensagens) {
-				if(mensagem.getLida() != null && !mensagem.getLida()) {
+				if(BooleanUtils.isNotTrue(mensagem.getLida())) {
 					mensagem.setLida(true);
 					qtd++;
 				}
@@ -124,6 +126,7 @@ public class MensagemService {
 			.setDestinatario(contatoEmissor.getContato())
 			.setDataEnvio(LocalDateTime.now())
 			.setLida(false);
+		mensagemRepository.save(mensagem);
 		
 		Contato contatoDestinatario = contatoService.recuperaContato(mensagem.getDestinatario().getLogin(), emissor);
 
@@ -134,7 +137,10 @@ public class MensagemService {
 		} else {
 			log.info("Contato bloqueado ou não existe. Não vai enviar mensagem pro websocket.");
 		}
-		
-		mensagemRepository.save(mensagem);
+	}
+
+	public void marcarMensagemLida(Long id) {
+		Mensagem lida = mensagemRepository.findOne(id).setLida(true);
+		mensagemRepository.save(lida);
 	}
 }

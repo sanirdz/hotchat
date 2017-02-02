@@ -37,6 +37,7 @@ public class WebSocketService {
 	}
 
 	public void enviarMensagem(Mensagem mensagem) {
+		log.info("Enviando mensagem " + mensagem.getId());
 		SimpMessageHeaderAccessor headers = SimpMessageHeaderAccessor.create();
 		headers.addNativeHeader("tipo", "mensagem");
 		
@@ -46,7 +47,8 @@ public class WebSocketService {
 				new MensagemDTO()
 					.setConteudo(mensagem.getConteudo())
 					.setDataEnvio(mensagem.getDataEnvio())
-					.setEmissor(mensagem.getEmissor().getLogin()),
+					.setEmissor(mensagem.getEmissor().getLogin())
+					.setId(mensagem.getId()),
 				headers.getMessageHeaders());
 	}
 	

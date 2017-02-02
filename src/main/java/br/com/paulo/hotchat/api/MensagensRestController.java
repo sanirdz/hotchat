@@ -59,10 +59,25 @@ public class MensagensRestController {
 			mensagensDTO.add(new MensagemDTO()
 					.setConteudo(m.getConteudo())
 					.setDataEnvio(m.getDataEnvio())
-					.setEmissor(m.getEmissor().getLogin()));
+					.setEmissor(m.getEmissor().getLogin())
+					.setId(m.getId()));
 		});
 		
 		return ResponseEntity.ok(mensagensDTO);
+	}
+	
+	@ApiOperation(value = "Marca a mensagen enviada como lida", tags = {"MensagensRestController"})
+	@ApiResponses({
+			@ApiResponse(code = 200, message = "Operação executada com sucesso."),
+			@ApiResponse(code = 400, message = "Dados da requisição inválidos."),
+			@ApiResponse(code = 500, message = "Erro inesperado no servidor.")})
+	@RequestMapping(path = "/{id}/marcarLida", method = RequestMethod.POST, consumes = "application/json")
+	public ResponseEntity<Integer> marcarMensagemLida(@ApiParam("id da mensagem") @PathVariable("id") Long id) {
+		
+		log.debug("POST para marca mensage lida. {}", id);
+		mensagemService.marcarMensagemLida(id);
+		
+		return ResponseEntity.ok().build();
 	}
 	
 	@ApiOperation(value = "Marca as mensagens enviadas por um emissor ao usuario logado como lidas", tags = {"MensagensRestController"})

@@ -12,6 +12,13 @@ angular.module('chatapp')
 	            	destinatario: '@destinatario'
 	            }
 	        },
+	        notificaMensagemLida: {
+	        	method: 'POST',
+	        	url: API_URL + '/api/mensagens/:id/marcarLida',
+	        	params: {
+	        		id: '@id'
+				}
+	        },
 			lerMensagens: {
 				method: 'POST',
 				url: API_URL + '/api/mensagens/:emissor/marcarLidas',

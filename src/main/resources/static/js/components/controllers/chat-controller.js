@@ -41,6 +41,8 @@ angular.module('chatapp')
 		        	$scope.historico.push({'conteudo' : mensagem.conteudo, 'emissor': {'login': mensagem.emissor}, 'dataEnvio': mensagem.dataEnvio});
 		        	
 		        	$scope.$apply();
+		        	
+		        	ApiService.notificaMensagemLida(mensagem);
 	        	}
     		}
 		});

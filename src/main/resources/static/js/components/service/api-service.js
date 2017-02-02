@@ -3,6 +3,11 @@ angular.module('chatapp')
 .service('ApiService', function(Contato, Mensagem) {
     var service = {};
 
+    service.notificaMensagemLida = function(mensagem) {
+    	console.log('notificando mensagem lida ' + mensagem.id);
+    	Mensagem.notificaMensagemLida({"id": mensagem.id});
+    }
+    
     service.adicionarContato = function(usuario) {
     	return Contato.adicionarContato({"usuario": usuario.login}).$promise;
     };
