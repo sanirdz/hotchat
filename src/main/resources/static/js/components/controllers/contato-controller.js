@@ -46,11 +46,6 @@ angular.module('chatapp')
 					ApiService
 						.excluirContato(contato)
 						.then((result) => {
-							  swal(
-							    'Sucesso!',
-							    'O contato foi excluído com sucesso.',
-							    'success'
-							  );
 							  console.log('removendo o contato ' + contato.login +  ' da lista de contatos')
 							  $scope.contatos = $scope.contatos.filter(function(el) {
 								 return el.login !== contato.login;
@@ -76,11 +71,7 @@ angular.module('chatapp')
 					ApiService
 						.bloquearContato(contato)
 						.then((result) => {
-							  swal(
-							    'Sucesso!',
-							    'O contato foi bloqueado com sucesso.',
-							    'success'
-							  )
+							  contato.bloqueado = true;
 						});
 				})	
 		};
@@ -99,11 +90,7 @@ angular.module('chatapp')
 					ApiService
 						.desbloquearContato(contato)
 						.then((result) => {
-						  swal(
-						    'Sucesso!',
-						    'O contato foi desbloqueado com sucesso.',
-						    'success'
-						  )
+						  contato.bloqueado = false;
 					});
 				})	
 		};

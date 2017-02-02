@@ -5,6 +5,7 @@ public class ContatoDTO {
 	private String login;
 	private Integer totalMensagensNaoLidas;
 	private Boolean online;
+	private Boolean bloqueado;
 	
 	public String getLogin() {
 		return login;
@@ -30,6 +31,15 @@ public class ContatoDTO {
 
 	public ContatoDTO setOnline(Boolean online) {
 		this.online = online;
+		return this;
+	}
+
+	public Boolean getBloqueado() {
+		return bloqueado;
+	}
+
+	public ContatoDTO setBloqueado(Boolean bloqueado) {
+		this.bloqueado = bloqueado;
 		return this;
 	}
 	

@@ -125,7 +125,7 @@ public class Usuario {
 			return false;
 		return true;
 	}
-
+	//TODO mover pra Contato?
 	public Integer getTotalMensagensNaoLidas() {
 		return totalMensagensNaoLidas;
 	}

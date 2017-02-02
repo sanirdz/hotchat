@@ -21,6 +21,8 @@ public class Contato {
 	@ManyToOne
 	@JoinColumn(name = "ID_CONTATO")
 	private Usuario contato;
+	
+	private Boolean bloqueado;
 
 	public Long getId() {
 		return id;
@@ -46,6 +48,15 @@ public class Contato {
 
 	public Contato setPrincipal(Usuario principal) {
 		this.principal = principal;
+		return this;
+	}
+
+	public Boolean getBloqueado() {
+		return bloqueado;
+	}
+
+	public Contato setBloqueado(Boolean bloqueado) {
+		this.bloqueado = bloqueado;
 		return this;
 	}
 }

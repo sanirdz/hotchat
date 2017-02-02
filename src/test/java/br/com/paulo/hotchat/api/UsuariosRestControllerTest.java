@@ -25,6 +25,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import br.com.paulo.hotchat.api.resource.SalvarUsuarioDTO;
+import br.com.paulo.hotchat.domain.Contato;
 import br.com.paulo.hotchat.domain.Usuario;
 import br.com.paulo.hotchat.service.ContatoService;
 import br.com.paulo.hotchat.service.UsuarioService;
@@ -88,10 +89,10 @@ public class UsuariosRestControllerTest {
 	
 	@Test
 	public void getRetorna200MaisListaComDoisUsuarios() throws Exception {
-		ArrayList<Usuario> lista = new ArrayList<>();
-		lista.add(new Usuario().setLogin("usuario1"));
-		lista.add(new Usuario().setLogin("usuario2"));
-		given(usuarioService.listarContatos("paulo")).willReturn(lista);
+		ArrayList<Contato> lista = new ArrayList<>();
+		lista.add(new Contato().setContato(new Usuario().setLogin("usuario1")));
+		lista.add(new Contato().setContato(new Usuario().setLogin("usuario2")));
+		given(contatoService.listarContatos("paulo")).willReturn(lista);
 		
 		mvc.perform(get("/api/usuarios/")
 				.contentType(MediaType.APPLICATION_JSON))
