@@ -58,14 +58,6 @@ public class BootstrapData {
 			paulo2.setSenha(passwordEncoder.encode("senha"));
 			usuarioRepository.save(paulo2);
 			userRoleRepository.save(new UserRole().setUsername("paulo2").setAuthority("ROLE_USER"));
-
-			
-			Usuario paulo3 = new Usuario();
-			paulo3.setLogin("paulo3");
-			paulo3.setEnabled(true);
-			paulo3.setSenha(passwordEncoder.encode("senha"));
-			usuarioRepository.save(paulo3);
-			userRoleRepository.save(new UserRole().setUsername("paulo3").setAuthority("ROLE_USER"));
 			
 			Mensagem mensagem = new Mensagem();
 			mensagem.setDataEnvio(LocalDateTime.now());
@@ -82,6 +74,15 @@ public class BootstrapData {
 			mensagem.setLida(false);
 			mensagem.setConteudo("Essa é uma mensagem do paulo pro paulo2");
 			mensagemRepository.save(mensagem);
+			
+			for(int i = 0; i < 100; i++) {
+				Usuario usuario = new Usuario();
+				usuario.setLogin("usuario" + i);
+				usuario.setEnabled(true);
+				usuario.setSenha(passwordEncoder.encode("senha"));
+				usuarioRepository.save(usuario);
+				userRoleRepository.save(new UserRole().setUsername("usuario" + i).setAuthority("ROLE_USER"));
+			}
 		}		
 	}
 }
