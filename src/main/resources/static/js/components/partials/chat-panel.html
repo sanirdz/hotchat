@@ -15,7 +15,7 @@
 	</div>
 	
 	<footer id="footer-msg">
-		<textarea class="text-field" ng-model="mensagem"></textarea> 
+		<textarea class="text-field" ng-model="mensagem" hot-enter="enviaMensagem(mensagem, contatoAtivo.login);mensagem = null"></textarea> 
 		<button class="btn btn-primary btn-send" ng-click="enviaMensagem(mensagem, contatoAtivo.login);mensagem = null" style="float:right">Enviar</button>
 	</footer>
 
