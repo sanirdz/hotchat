@@ -32,6 +32,14 @@ angular.module('chatapp')
 			});
 		} 
 		
+		$scope.$on('usuario-desbloqueado', function(event, data) {
+			var contato = data.contato;
+			if($rootScope.contatoAtivo && contato.login == $rootScope.contatoAtivo.login) {
+				recuperaHistorico(contato.login);
+				
+			}
+		});
+		
 		$scope.$on('nova-mensagem', function(event, data) {
 			var mensagem = data.mensagem;
 			
