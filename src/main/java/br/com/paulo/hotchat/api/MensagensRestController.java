@@ -50,7 +50,6 @@ public class MensagensRestController {
 			@ApiParam("Login do destinatário") @PathVariable("destinatario") String destinatario) {
 		
 		log.debug("GET para listar mensagens. Usuário logado: {}", usuarioLogado.getUsername());
-		//TODO incluir parametros de paginacao
 		
 		Iterable<Mensagem> mensagens = mensagemService.listarMensagensDestinatarioEmissor(destinatario, usuarioLogado.getUsername());
 		List<MensagemDTO> mensagensDTO = new ArrayList<>();

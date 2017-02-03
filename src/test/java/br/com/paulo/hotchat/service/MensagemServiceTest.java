@@ -139,7 +139,7 @@ public class MensagemServiceTest {
 					.setPrincipal(new Usuario().setLogin(i.getArgumentAt(0, String.class)))
 					.setBloqueado(true);
 		});
-	Integer quantidadeMensagensLidas = mensagemService.recuperaQuantidadeMensagensNaoLidas(loginEmissor, loginDestinatario);
+		Integer quantidadeMensagensLidas = mensagemService.recuperaQuantidadeMensagensNaoLidas(loginEmissor, loginDestinatario);
 		
 		assertThat(quantidadeMensagensLidas).isEqualTo(0);
 	}

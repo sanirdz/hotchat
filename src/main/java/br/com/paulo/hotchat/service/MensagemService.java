@@ -79,12 +79,10 @@ public class MensagemService {
 		Integer qtd = 0;
 
 		if(contatoDestinatario != null && BooleanUtils.isNotTrue(contatoDestinatario.getBloqueado())) {
-			//FIXME NPE aqui, ainda nao consegui reproduzir
 			Usuario destinatario = contatoEmissor.getContato();
 			Usuario emissor = contatoEmissor.getPrincipal();
 			
 			Iterable<Mensagem> mensagens = mensagemRepository.findAllByDestinatarioAndEmissorOrderByDataEnvio(destinatario, emissor);	
-			log.debug(mensagens.toString());
 			
 			for (Mensagem mensagem : mensagens) {
 				if(BooleanUtils.isNotTrue(mensagem.getLida())) {
