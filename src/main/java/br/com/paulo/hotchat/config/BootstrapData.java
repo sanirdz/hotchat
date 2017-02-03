@@ -1,6 +1,8 @@
 package br.com.paulo.hotchat.config;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -93,14 +95,17 @@ public class BootstrapData {
 			mensagem.setConteudo("Essa é uma mensagem do paulo pro paulo2");
 			mensagemRepository.save(mensagem);
 			
-//			for(int i = 0; i < 100; i++) {
-//				Usuario usuario = new Usuario();
-//				usuario.setLogin("usuario" + i);
-//				usuario.setEnabled(true);
-//				usuario.setSenha(passwordEncoder.encode("senha"));
-//				usuarioRepository.save(usuario);
-//				userRoleRepository.save(new UserRole().setUsername("usuario" + i).setAuthority("ROLE_USER"));
-//			}
+			List<Usuario> usuarios = new ArrayList<>();
+			List<UserRole> roles = new ArrayList<>();
+			for(int i = 0; i < 100; i++) {
+				usuarios.add(new Usuario()
+						.setLogin("usuario" + i)
+						.setEnabled(true)
+						.setSenha(passwordEncoder.encode("senha")));
+				roles.add(new UserRole().setUsername("usuario" + i).setAuthority("ROLE_USER"));
+			}
+			usuarioRepository.save(usuarios);
+			userRoleRepository.save(roles);
 		}		
 	}
 }
