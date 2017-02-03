@@ -73,14 +73,13 @@ public class MensagemService {
 	public Integer marcarMensagensLidas(String loginEmissor, String loginDestinatario) {
 		log.info("Marcando mensagens como lidas. {} -> {}...", loginEmissor, loginDestinatario);
 
-		Contato contatoEmissor = contatoService.recuperaContato(loginEmissor, loginDestinatario);
 		Contato contatoDestinatario = contatoService.recuperaContato(loginDestinatario, loginEmissor);
 		
 		Integer qtd = 0;
 
 		if(contatoDestinatario != null && BooleanUtils.isNotTrue(contatoDestinatario.getBloqueado())) {
-			Usuario destinatario = contatoEmissor.getContato();
-			Usuario emissor = contatoEmissor.getPrincipal();
+			Usuario destinatario = contatoDestinatario.getPrincipal();
+			Usuario emissor = contatoDestinatario.getContato();
 			
 			Iterable<Mensagem> mensagens = mensagemRepository.findAllByDestinatarioAndEmissorOrderByDataEnvio(destinatario, emissor);	
 			
