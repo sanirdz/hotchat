@@ -41,6 +41,8 @@ public class MensagemServiceTest {
 	
 	private String loginEmissor = "emissor";
 	private String loginDestinatario = "destinatario";
+	private List<Mensagem> mensagensEnviadas;
+	private List<Mensagem> mensagensRecebidas;
 	
 	@SuppressWarnings("unchecked")
 	@Before
@@ -49,8 +51,18 @@ public class MensagemServiceTest {
 		mensagemService = new MensagemService(usuarioRepositoryMock, mensagemRepositoryMock, webSocketServiceMock, usuariosConectadosMock);
 		mensagemService.setContatoService(contatoServiceMock);
 	
+		loginEmissor = "emissor";
+		loginDestinatario = "destinatario";
+
+		mensagensEnviadas = new ArrayList<>();
+		mensagensEnviadas.add(new Mensagem().setConteudo("mensagem 3").setDataEnvio(LocalDateTime.of(2010, 1, 1, 1, 3)));
+		mensagensEnviadas.add(new Mensagem().setConteudo("mensagem 1").setDataEnvio(LocalDateTime.of(2010, 1, 1, 1, 1)));
 		
-		when(contatoServiceMock.recuperaContato(loginEmissor, loginDestinatario)).then((InvocationOnMock i) -> {
+		mensagensRecebidas = new ArrayList<>();
+		mensagensRecebidas.add(new Mensagem().setConteudo("mensagem 4").setDataEnvio(LocalDateTime.of(2010, 1, 1, 1, 4)));
+		mensagensRecebidas.add(new Mensagem().setConteudo("mensagem 2").setDataEnvio(LocalDateTime.of(2010, 1, 1, 1, 2)));
+		
+		when(contatoServiceMock.recuperaContato(anyString(), anyString())).then((InvocationOnMock i) -> {
 			return new Contato()
 					.setContato(new Usuario().setLogin(i.getArgumentAt(1, String.class)))
 					.setPrincipal(new Usuario().setLogin(i.getArgumentAt(0, String.class)));
@@ -60,18 +72,13 @@ public class MensagemServiceTest {
 			return new Usuario().setLogin(i.getArgumentAt(0, String.class));
 		});
 		
-		List<Mensagem> mensagensEnviadas = new ArrayList<>();
-		mensagensEnviadas.add(new Mensagem().setConteudo("mensagem 3").setDataEnvio(LocalDateTime.of(2010, 1, 1, 1, 3)));
-		mensagensEnviadas.add(new Mensagem().setConteudo("mensagem 1").setDataEnvio(LocalDateTime.of(2010, 1, 1, 1, 1)));
-		
-		List<Mensagem> mensagensRecebidas = new ArrayList<>();
-		mensagensRecebidas.add(new Mensagem().setConteudo("mensagem 4").setDataEnvio(LocalDateTime.of(2010, 1, 1, 1, 4)));
-		mensagensRecebidas.add(new Mensagem().setConteudo("mensagem 2").setDataEnvio(LocalDateTime.of(2010, 1, 1, 1, 2)));
 		when(mensagemRepositoryMock.findAllByDestinatarioAndEmissorOrderByDataEnvio(any(Usuario.class), any(Usuario.class))).thenReturn(mensagensEnviadas, mensagensRecebidas);
+		
+		when(mensagemRepositoryMock.recuperaQuantidadeMensagensNaoLidas(anyString(), anyString())).thenReturn(2);
 	}
 	
 	@Test
-	public void listarMensagensDestinatarioEmissor() {
+	public void listarMensagensDestinatarioEmissorContatoDesbloqueadoRetornaQuatroMensagensOrdenadasPorData() {
 		TreeSet<Mensagem> lista = (TreeSet<Mensagem>) mensagemService.listarMensagensDestinatarioEmissor(loginDestinatario, loginEmissor);
 		
 		assertThat(lista).hasSize(4);
@@ -82,7 +89,7 @@ public class MensagemServiceTest {
 	}
 	
 	@Test
-	public void listarMensagensDestinatarioEmissorContatoBloqueadoRetornaApenasMensagensEnviadas() {
+	public void listarMensagensDestinatarioEmissorContatoBloqueadoRetornaApenasMensagensEnviadasOrdenadasPorData() {
 		when(contatoServiceMock.recuperaContato(loginEmissor, loginDestinatario)).then((InvocationOnMock i) -> {
 			return new Contato()
 					.setContato(new Usuario().setLogin(i.getArgumentAt(1, String.class)))
@@ -97,19 +104,43 @@ public class MensagemServiceTest {
 		assertThat(lista.pollFirst().getConteudo()).isEqualTo("mensagem 3");
 	}
 
-	public void marcarMensagensLidas() {
-	
+	@Test
+	public void marcarMensagensLidasContatoDesbloqueadoRetornaDois() {
+		Integer quantidadeMensagensLidas = mensagemService.marcarMensagensLidas(loginEmissor, loginDestinatario);
+		
+		assertThat(quantidadeMensagensLidas).isEqualTo(2);
 	}
 	
-	public void recuperaQuantidadeMensagensNaoLidas() {
+	@Test
+	public void marcarMensagensLidasContatoBloqueadoRetornaZero() {
+		when(contatoServiceMock.recuperaContato(loginDestinatario, loginEmissor)).then((InvocationOnMock i) -> {
+			return new Contato()
+					.setContato(new Usuario().setLogin(i.getArgumentAt(1, String.class)))
+					.setPrincipal(new Usuario().setLogin(i.getArgumentAt(0, String.class)))
+					.setBloqueado(true);
+		});
+		Integer quantidadeMensagensLidas = mensagemService.marcarMensagensLidas(loginEmissor, loginDestinatario);
+		
+		assertThat(quantidadeMensagensLidas).isEqualTo(0);
+	}
 	
+	@Test
+	public void recuperaQuantidadeMensagensNaoLidasContatoDesbloqueadoRetornaDois() {
+		Integer quantidadeMensagensLidas = mensagemService.recuperaQuantidadeMensagensNaoLidas(loginEmissor, loginDestinatario);
+		
+		assertThat(quantidadeMensagensLidas).isEqualTo(2);
 	}
 
-	public void enviarMensagem() {
-	
-	}
-
-	public void marcarMensagemLida() {
-	
+	@Test
+	public void recuperaQuantidadeMensagensNaoLidasContatoBloqueadoRetornaZero() {
+		when(contatoServiceMock.recuperaContato(loginDestinatario, loginEmissor)).then((InvocationOnMock i) -> {
+			return new Contato()
+					.setContato(new Usuario().setLogin(i.getArgumentAt(1, String.class)))
+					.setPrincipal(new Usuario().setLogin(i.getArgumentAt(0, String.class)))
+					.setBloqueado(true);
+		});
+	Integer quantidadeMensagensLidas = mensagemService.recuperaQuantidadeMensagensNaoLidas(loginEmissor, loginDestinatario);
+		
+		assertThat(quantidadeMensagensLidas).isEqualTo(0);
 	}
 }
