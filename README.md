@@ -13,10 +13,13 @@ Aplicação Web de Chat utilizando a linguagem de programação Java e as tecnol
   * Senha: (em branco)
   * A estrutura do banco é criada no momento que sobe a aplicação.
 
-#### Executar a aplicação: `mvn spring-boot:run`
-
+#### Executando a aplicação:
+ 
+* Executar `mvn spring-boot:run`
 * URL: `http://localhost:8080/hotchat`
 * Documentação da API: `http://localhost:8080/hotchat/swagger-ui.html`
+
+* Para executar os testes: `mvn test`
 
 #### Informações:
 
