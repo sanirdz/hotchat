@@ -11,7 +11,7 @@ Aplicação Web de Chat utilizando a linguagem de programação Java e as tecnol
   * jdbc-url: `jdbc:h2:mem:test` 
   * Usuario: sa
   * Senha: (em branco)
-  * A estrutura é criada no momento que sobe a aplicação.
+  * A estrutura do banco é criada no momento que sobe a aplicação.
 
 #### Executar a aplicação: `mvn spring-boot:run`
 
@@ -25,6 +25,7 @@ Aplicação Web de Chat utilizando a linguagem de programação Java e as tecnol
   * login: usuario(0-99)
   * senha: senha
 * Aprendi Angular e WebSocket nesse desafio, portanto pode ter alguma coisa esquisita... 
+* A princípio a aplicação funciona apenas em localhost. Para acessar na rede, alterar em `app.js` o valor de `API_URL` para o IP/nome da máquina e acessar com esse endereço. Ex: `http://nome:8080/hotchat` 
 
 #### Pontos extras implementados:
 
