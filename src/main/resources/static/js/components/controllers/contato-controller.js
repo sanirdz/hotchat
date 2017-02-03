@@ -51,7 +51,7 @@ angular.module('chatapp')
 								 return el.login !== contato.login;
 							  });
 							  
-							  if($rootScope.contatoAtivo.login == contato.login) {
+							  if($rootScope.contatoAtivo && $rootScope.contatoAtivo.login == contato.login) {
 								  $rootScope.contatoAtivo = null;
 							  }
 						});
