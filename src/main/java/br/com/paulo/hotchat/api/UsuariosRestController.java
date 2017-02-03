@@ -61,7 +61,7 @@ public class UsuariosRestController {
 			@ApiResponse(code = 200, message = "Usuário excluído com sucesso."),
 			@ApiResponse(code = 400, message = "Dados da requisição inválidos."),
 			@ApiResponse(code = 500, message = "Erro inesperado no servidor.")})
-	@RequestMapping(path="/{contato}/excluir", method = RequestMethod.POST, produces = "application/json")
+	@RequestMapping(path="/{contato}", method = RequestMethod.DELETE, produces = "application/json")
 	public ResponseEntity<Void> excluir(@ApiParam("Login do contato") @PathVariable("contato") String contato,
 			@ApiIgnore @AuthenticationPrincipal User usuarioLogado) {
 		log.debug("POST para excluir contato");

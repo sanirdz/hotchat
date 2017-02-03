@@ -35,8 +35,8 @@ angular.module('chatapp')
 				}
 	        },
 	        excluir: {
-	        	url: API_URL + '/api/usuarios/:contato/excluir',
-	            method: 'POST',
+	        	url: API_URL + '/api/usuarios/:contato',
+	            method: 'DELETE',
 				params: {
 					contato: '@contato'
 				}

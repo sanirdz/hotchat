@@ -11,9 +11,11 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import br.com.paulo.hotchat.domain.Usuario;
 import br.com.paulo.hotchat.service.UsuarioService;
+import springfox.documentation.annotations.ApiIgnore;
 
 @Controller
 @RequestMapping("/cadastro")
+@ApiIgnore
 public class CadastroUsuarioController {
 
 	private final UsuarioService hotChatService;
@@ -22,7 +24,7 @@ public class CadastroUsuarioController {
 		this.hotChatService = hotChatService;
 	}
 
-	@RequestMapping("/novo")
+	@RequestMapping(path = "/novo", method = RequestMethod.GET)
 	public String novo(Model model) {
 		model.addAttribute("usuario", new Usuario());
 		return "cadastro/novo";

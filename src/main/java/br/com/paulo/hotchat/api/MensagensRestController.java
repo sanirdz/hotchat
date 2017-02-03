@@ -66,7 +66,7 @@ public class MensagensRestController {
 		return ResponseEntity.ok(mensagensDTO);
 	}
 	
-	@ApiOperation(value = "Marca a mensagen enviada como lida", tags = {"MensagensRestController"})
+	@ApiOperation(value = "Marca a mensagem como lida", tags = {"MensagensRestController"})
 	@ApiResponses({
 			@ApiResponse(code = 200, message = "Operação executada com sucesso."),
 			@ApiResponse(code = 400, message = "Dados da requisição inválidos."),
@@ -74,7 +74,7 @@ public class MensagensRestController {
 	@RequestMapping(path = "/{id}/marcarLida", method = RequestMethod.POST, consumes = "application/json")
 	public ResponseEntity<Integer> marcarMensagemLida(@ApiParam("id da mensagem") @PathVariable("id") Long id) {
 		
-		log.debug("POST para marca mensage lida. {}", id);
+		log.debug("POST para marcar mensagem lida. {}", id);
 		mensagemService.marcarMensagemLida(id);
 		
 		return ResponseEntity.ok().build();
