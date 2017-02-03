@@ -1,7 +1,6 @@
 package br.com.paulo.hotchat.service;
 
 import java.time.LocalDateTime;
-import java.util.Comparator;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -53,12 +52,10 @@ public class MensagemService {
 		Usuario emissor = usuarioRepository.findByLogin(loginEmissor);
 		
 		Iterable<Mensagem> mensagensEnviadas = mensagemRepository.findAllByDestinatarioAndEmissorOrderByDataEnvio(destinatario, emissor);
-		Set<Mensagem> mensagens = new TreeSet<>(new Comparator<Mensagem>() {
-			@Override
-			public int compare(Mensagem o1, Mensagem o2) {
-				return o1.getDataEnvio().compareTo(o2.getDataEnvio());
-			}
+		Set<Mensagem> mensagens = new TreeSet<>((Mensagem o1, Mensagem o2) -> {
+			return o1.getDataEnvio().compareTo(o2.getDataEnvio());
 		});
+		
 		mensagensEnviadas.forEach(m -> mensagens.add(m));
 
 		if(contato != null && BooleanUtils.isNotTrue(contato.getBloqueado())) {
@@ -67,7 +64,6 @@ public class MensagemService {
 		} else {
 			log.info("Contato bloqueado ou não existe. Não vai recuperar as mensagens recebidas");
 		}
-
 		
 		log.debug("{} mensagens trocadas entre o destinatário {} e o emissor {}.", mensagens.size(), loginDestinatario, loginEmissor);
 		
@@ -83,7 +79,7 @@ public class MensagemService {
 		Integer qtd = 0;
 
 		if(contatoDestinatario != null && BooleanUtils.isNotTrue(contatoDestinatario.getBloqueado())) {
-			
+			//FIXME NPE aqui, ainda nao consegui reproduzir
 			Usuario destinatario = contatoEmissor.getContato();
 			Usuario emissor = contatoEmissor.getPrincipal();
 			
